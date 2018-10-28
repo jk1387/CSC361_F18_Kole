@@ -47,20 +47,10 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public class WorldController extends InputAdapter implements Disposable {
 
-	private static final String TAG = WorldController.class.getName();
-	//public Level level;
-	public int lives;
-	public int score;
+	private static final String TAG = 
+			WorldController.class.getName();
 	private Game game;
 	public CameraHelper cameraHelper;
-
-	public float livesVisual;
-	public float scoreVisual;
-
-	private Rectangle r1 = new Rectangle();
-	private Rectangle r2 = new Rectangle();
-
-	public World b2world;
 
 	/**
 	 * constructor for world controller
@@ -78,8 +68,6 @@ public class WorldController extends InputAdapter implements Disposable {
 	private void init() {
 		Gdx.input.setInputProcessor(this);
 		cameraHelper = new CameraHelper();
-		lives = Constants.LIVES_START;
-		livesVisual = lives;
 		initLevel();
 	}
 
@@ -87,9 +75,6 @@ public class WorldController extends InputAdapter implements Disposable {
 	 * Level initialization method
 	 */
 	private void initLevel() {
-		score = 0;
-		scoreVisual = score;
-		//level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.orb);
 	}
 
@@ -122,21 +107,7 @@ public class WorldController extends InputAdapter implements Disposable {
 	 * @param deltaTime the game time
 	 */
 	public void update(float deltaTime) {
-		handleDebugInput(deltaTime);
-		handleInputGame(deltaTime);
-
-		//level.update(deltaTime);
-		b2world.step(deltaTime, 8, 3);
-		cameraHelper.update(deltaTime);
-
-		// pillars scroll at different speeds
-		level.pillars.updateScrollPosition(cameraHelper.getPosition());
-		// life lost animation goes as livesVisual catches up to lives
-		if (livesVisual > lives)
-			livesVisual = Math.max(lives, livesVisual - 1 * deltaTime);
-		// score gain animation goes as scoreVisual catches up to new score
-		if (scoreVisual < score)
-			scoreVisual = Math.min(score, scoreVisual + 250 * deltaTime);
+		//handleDebugInput(deltaTime);
 	}
 
 	/**
@@ -144,41 +115,41 @@ public class WorldController extends InputAdapter implements Disposable {
 	 * 
 	 * @param deltaTime game time
 	 */
-	private void handleDebugInput(float deltaTime) {
-		if (Gdx.app.getType() != ApplicationType.Desktop)
-			return;
-
-		if (!cameraHelper.hasTarget(level.orb)) {
-			// Camera Controls(move)
-			float camMoveSpeed = 5 * deltaTime;
-			float camMoveSpeedAccelerationFactor = 5;
-			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
-				camMoveSpeed *= camMoveSpeedAccelerationFactor;
-			if (Gdx.input.isKeyPressed(Keys.LEFT))
-				moveCamera(-camMoveSpeed, 0);
-			if (Gdx.input.isKeyPressed(Keys.RIGHT))
-				moveCamera(camMoveSpeed, 0);
-			if (Gdx.input.isKeyPressed(Keys.UP))
-				moveCamera(0, camMoveSpeed);
-			if (Gdx.input.isKeyPressed(Keys.DOWN))
-				moveCamera(0, -camMoveSpeed);
-			if (Gdx.input.isKeyPressed(Keys.BACKSPACE))
-				cameraHelper.setPosition(0, 0);
-
-			// Camera controls(zoom)
-			float camZoomSpeed = 1 * deltaTime;
-			float camZoomSpeedAccelerationFactor = 5;
-			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
-				camZoomSpeed *= camZoomSpeedAccelerationFactor;
-			if (Gdx.input.isKeyPressed(Keys.COMMA))
-				cameraHelper.addZoom(camZoomSpeed);
-			if (Gdx.input.isKeyPressed(Keys.PERIOD))
-				cameraHelper.addZoom(-camZoomSpeed);
-			if (Gdx.input.isKeyPressed(Keys.SLASH))
-				cameraHelper.setZoom(1);
-
-		}
-	}
+//	private void handleDebugInput(float deltaTime) {
+//		if (Gdx.app.getType() != ApplicationType.Desktop)
+//			return;
+//
+//		if (!cameraHelper.hasTarget(level.orb)) {
+//			// Camera Controls(move)
+//			float camMoveSpeed = 5 * deltaTime;
+//			float camMoveSpeedAccelerationFactor = 5;
+//			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
+//				camMoveSpeed *= camMoveSpeedAccelerationFactor;
+//			if (Gdx.input.isKeyPressed(Keys.LEFT))
+//				moveCamera(-camMoveSpeed, 0);
+//			if (Gdx.input.isKeyPressed(Keys.RIGHT))
+//				moveCamera(camMoveSpeed, 0);
+//			if (Gdx.input.isKeyPressed(Keys.UP))
+//				moveCamera(0, camMoveSpeed);
+//			if (Gdx.input.isKeyPressed(Keys.DOWN))
+//				moveCamera(0, -camMoveSpeed);
+//			if (Gdx.input.isKeyPressed(Keys.BACKSPACE))
+//				cameraHelper.setPosition(0, 0);
+//
+//			// Camera controls(zoom)
+//			float camZoomSpeed = 1 * deltaTime;
+//			float camZoomSpeedAccelerationFactor = 5;
+//			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
+//				camZoomSpeed *= camZoomSpeedAccelerationFactor;
+//			if (Gdx.input.isKeyPressed(Keys.COMMA))
+//				cameraHelper.addZoom(camZoomSpeed);
+//			if (Gdx.input.isKeyPressed(Keys.PERIOD))
+//				cameraHelper.addZoom(-camZoomSpeed);
+//			if (Gdx.input.isKeyPressed(Keys.SLASH))
+//				cameraHelper.setZoom(1);
+//
+//		}
+//	}
 
 	/**
 	 * Controls the x and y movements of the camera.
@@ -205,7 +176,7 @@ public class WorldController extends InputAdapter implements Disposable {
 		}
 		// Toggle camera follow
 		else if (keycode == Keys.ENTER) {
-			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.orb);
+			//cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.orb);
 			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
 		}
 		// Back to Menu
@@ -220,8 +191,8 @@ public class WorldController extends InputAdapter implements Disposable {
 	 */
 	@Override
 	public void dispose() {
-		if (b2world != null)
-			b2world.dispose();
+//		if (b2world != null)
+//			b2world.dispose();
 
 	}
 }
