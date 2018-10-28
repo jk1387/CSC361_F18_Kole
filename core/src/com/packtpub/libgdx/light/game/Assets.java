@@ -31,9 +31,15 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetLevelDecoration levelDecoration;
 
 
-	//singleton: prevent instantiation from other classes
+	/**
+	 * singleton: prevent instantiation from other classes
+	 */
 	private Assets() {}
 	
+	/**
+	 * Manages the assets and throws errors if assets aren't loaded.
+	 * @param assetManager
+	 */
 	public void init(AssetManager assetManager) 
 	{
 		this.assetManager = assetManager;
@@ -66,8 +72,9 @@ public class Assets implements Disposable, AssetErrorListener {
 		levelDecoration = new AssetLevelDecoration(atlas);
 	}
 
-	// This inner class contains a member variable called "head"
-	// and will display the orb head
+	/**
+	 *  This inner class contains a member variable called "orb" and will display it.
+	 */
 	public class AssetOrb {
 		public final AtlasRegion orb;
 
@@ -76,7 +83,9 @@ public class Assets implements Disposable, AssetErrorListener {
 		}
 	}
 
-	// Builds the rock platforms based on its edges around each central piece
+	/**
+	 * Builds the rock platforms based on its edges around each central piece.
+	 */
 	public class AssetRock {
 		public final AtlasRegion edge;
 		public final AtlasRegion middle;
@@ -87,7 +96,9 @@ public class Assets implements Disposable, AssetErrorListener {
 		}
 	}
 
-	// Builds the assets for gold shards
+	/**
+	 * Builds the assets for the shards.
+	 */
 	public class AssetShard {
 		public final AtlasRegion shard;
 		
@@ -96,7 +107,9 @@ public class Assets implements Disposable, AssetErrorListener {
 		}
 	}
 
-	// Builds the assets for embers
+	/**
+	 * Builds the assets for embers.
+	 */
 	public class AssetEmber {
 		public final AtlasRegion ember;
 
@@ -104,28 +117,40 @@ public class Assets implements Disposable, AssetErrorListener {
 			ember = atlas.findRegion("item_ember");
 		}
 	}
+	
+	/**
+	 * Builds the assets for pillars.
+	 */
 	public class AssetLevelDecoration{
-//		public final AtlasRegion cloud01;
-//		public final AtlasRegion cloud02;
-//		public final AtlasRegion cloud03;
 		public final AtlasRegion pillars;
 
 		public AssetLevelDecoration(TextureAtlas atlas) {
-//			cloud01 = atlas.findRegion("cloud01");
-//			cloud02 = atlas.findRegion("cloud02");
-//			cloud03 = atlas.findRegion("cloud03");
 			pillars = atlas.findRegion("pillars");
 		}
 	}
 
+	/**
+	 * Disposes unused assets from the asset manager.
+	 */
 	@Override
 	public void dispose() {
 		assetManager.dispose();
 	}
+	
+	/**
+	 * Error call for a file missing its assets.
+	 * @param filename name of the file
+	 * @param type type of the file class
+	 * @param throwable exception
+	 */
 	public void error(String filename, Class type, Throwable throwable) {
 		Gdx.app.error(TAG,  "Couldn't load asset '"+ filename + "'",(Exception)throwable);
 
 	}
+	
+	/**
+	 * Error call for asset file missing.
+	 */
 	@Override
 	public void error(AssetDescriptor asset, Throwable throwable) {
 		Gdx.app.error(TAG, "Couldn't load asset '"+ asset.fileName + "'", (Exception)throwable);

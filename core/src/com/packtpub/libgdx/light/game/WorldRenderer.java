@@ -44,6 +44,9 @@ public class WorldRenderer implements Disposable {
 		renderTestObjects();
 	}
 	
+	/**
+	 * Renders the test objects for testing.
+	 */
 	private void renderTestObjects() {
 		worldController.cameraHelper.applyTo(camera);
 		batch.setProjectionMatrix(camera.combined);

@@ -11,6 +11,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.assets.AssetManager;
 import com.packtpub.libgdx.light.game.Assets;
 
+/**
+ * Runner for the game. This creates, disposes, renders,
+ * resizes, pauses, and resumes. It also creates the instances
+ * of WorldController and WorldRenderer.
+ * @author Jacob Kole
+ */
 public class LightMain extends ApplicationAdapter {
 	private static final String TAG =
 			LightMain.class.getName();
