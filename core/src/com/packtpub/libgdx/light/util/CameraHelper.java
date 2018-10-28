@@ -1,6 +1,7 @@
 package com.packtpub.libgdx.light.util;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 //import com.packtpub.libgdx.light.game.objects.AbstractGameObject;
@@ -13,8 +14,8 @@ import com.badlogic.gdx.math.Vector2;
 public class CameraHelper {
 	private static final String TAG = CameraHelper.class.getName();
 	
-	//instance variable from chapter8
-	private final float FOLLOW_SPEED = 4.0f;
+//	//instance variable from chapter8
+//	private final float FOLLOW_SPEED = 4.0f;
 	
 	// dimensions
 	private final float MAX_ZOOM_IN = 0.25f;
@@ -24,6 +25,8 @@ public class CameraHelper {
 	private Vector2 position;
 	private float zoom;
 	//private AbstractGameObject target;
+	
+	private Sprite target;
 	
 	/**
 	 * Initialize the camera helper with the vector position
@@ -46,9 +49,11 @@ public class CameraHelper {
 		// updates the current position
 		//position.x = target.position.x + target.origin.x;
 		//position.y = target.position.y + target.origin.y;
+		position.x = target.getX() + target.getOriginX();
+		position.y = target.getY() + target.getOriginY();
 		
 		//allows the camera to follow
-		position.lerp(target.position, FOLLOW_SPEED * deltaTime);
+		//position.lerp(target.position, FOLLOW_SPEED * deltaTime);
 		
 		// Prevents camera from moving down too far
 		position.y = Math.max(-1f, position.y);
@@ -93,13 +98,15 @@ public class CameraHelper {
 	 * Sets the target of focus for the camera.
 	 * @param target the target of focus
 	 */
-	public void setTarget (AbstractGameObject target) { this.target = target; }
+	//public void setTarget (AbstractGameObject target) { this.target = target; }
+	public void setTarget (Sprite target) { this.target = target; }
 	
 	/**
 	 * Gets the target and builds a Sprite for it.
 	 * @return target the target to build
 	 */
-	public AbstractGameObject getTarget () { return target; }
+	//public AbstractGameObject getTarget () { return target; }
+	public Sprite getTarget () { return target; }
 	
 	/**
 	 * Checks if the camera has a target.
@@ -112,7 +119,8 @@ public class CameraHelper {
 	 * @param target the target to be checked
 	 * @return whether or not the sprite target matches with found target
 	 */
-	public boolean hasTarget (AbstractGameObject target) {
+	//public boolean hasTarget (AbstractGameObject target) {
+	public boolean hasTarget (Sprite target) {
 		return hasTarget() && this.target.equals(target);
 	}
 	
