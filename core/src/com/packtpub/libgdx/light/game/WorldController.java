@@ -12,6 +12,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.packtpub.libgdx.light.util.CameraHelper;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Handles the updates in the world. It KNOWS where objects are and what they're
@@ -49,15 +51,14 @@ public class WorldController extends InputAdapter implements Disposable {
 	private void initTestObjects() {
 		// Create new array for 5 sprites
 		testSprites = new Sprite[5];
-		// Create empty POT-sized Pixmap with 8 bit RGBA pixel data
-		int width = 32;
-		int height = 32;
-		Pixmap pixmap = createProceduralPixmap(width,height);
-		// Create a new texture from pixmap data
-		Texture texture = new Texture(pixmap);
+		// Create a list of texture regions
+		Array<TextureRegion> regions = new Array<TextureRegion>();
+		regions.add(Assets.instance.orb.orb);
+		regions.add(Assets.instance.ember.ember);
+		regions.add(Assets.instance.shard.shard);
 		// Create new sprites using the just created texture
 		for (int i = 0; i < testSprites.length; i++) {
-			Sprite spr = new Sprite(texture);
+			Sprite spr = new Sprite(regions.random());
 			// Define sprite size to be 1m x 1m in game world
 			spr.setSize(1,  1);
 			// Set origin to sprite's center
