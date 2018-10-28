@@ -8,6 +8,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.assets.AssetManager;
+import com.packtpub.libgdx.light.game.Assets;
 
 public class LightMain extends ApplicationAdapter {
 	private static final String TAG =
@@ -17,10 +19,16 @@ public class LightMain extends ApplicationAdapter {
 	
 	private boolean paused;
 	
+	/**
+	 * Create the instances for WorldController and WorldRenderer
+	 * and initialize the assets. Set paused to false.
+	 */
 	@Override
 	public void create () {
 		// Set Libgdx log level to DEBUG
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+		// Load assets
+		Assets.instance.init(new AssetManager());
 		// Initialize controller and renderer
 		worldController = new WorldController();
 		worldRenderer = new WorldRenderer(worldController);
@@ -28,6 +36,9 @@ public class LightMain extends ApplicationAdapter {
 		paused = false;
 	}
 
+	/**
+	 * Render the world's colors.
+	 */
 	@Override
 	public void render () {
 		// Do not update game world when paused.
@@ -46,23 +57,36 @@ public class LightMain extends ApplicationAdapter {
 		worldRenderer.render();
 	}
 	
+	/**
+	 * Resize the window for the world to render in.
+	 */
 	@Override
 	public void resize (int width, int height) {
 		worldRenderer.resize(width, height);
 	}
 	
+	/**
+	 * Sets the game to pause.
+	 */
 	@Override
 	public void pause () {
 		paused = true;
 	}
 	
+	/**
+	 * Resume the world.
+	 */
 	@Override
 	public void resume () {
 		paused = false;
 	}
 	
+	/**
+	 * Dispose unused resources.
+	 */
 	@Override
 	public void dispose () {
 		worldRenderer.dispose();
+		Assets.instance.dispose();
 	}
 }
