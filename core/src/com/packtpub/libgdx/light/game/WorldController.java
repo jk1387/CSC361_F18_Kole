@@ -48,6 +48,10 @@ public class WorldController extends InputAdapter implements Disposable {
 		initTestObjects();
 	}
 
+	/**
+	 * Initializes some test sprites to check to see if everything
+	 * is loading properly.
+	 */
 	private void initTestObjects() {
 		// Create new array for 5 sprites
 		testSprites = new Sprite[5];
@@ -108,6 +112,10 @@ public class WorldController extends InputAdapter implements Disposable {
 		cameraHelper.update(deltaTime);
 	}
 	
+	/**
+	 * Runs updates on the test objects generated for testing.
+	 * @param deltaTime game time between updates
+	 */
 	public void updateTestObjects(float deltaTime) {
 		// Get current rotation from selected sprite
 		float rotation = testSprites[selectedSprite].getRotation();
@@ -119,6 +127,10 @@ public class WorldController extends InputAdapter implements Disposable {
 		testSprites[selectedSprite].setRotation(rotation);
 	}
 	
+	/**
+	 * Handles all the debug inputs.
+	 * @param deltaTime time between updates
+	 */
 	private void handleDebugInput(float deltaTime) {
 		if(Gdx.app.getType() != ApplicationType.Desktop) return;
 		
@@ -162,6 +174,11 @@ public class WorldController extends InputAdapter implements Disposable {
 			cameraHelper.setZoom(1);
 	}
 	
+	/**
+	 * Moves the selected sprite some distance x and y.
+	 * @param x horizontal coord
+	 * @param y vertical coord
+	 */
 	private void moveSelectedSprite (float x, float y) {
 		testSprites[selectedSprite].translate(x,  y);
 	}
