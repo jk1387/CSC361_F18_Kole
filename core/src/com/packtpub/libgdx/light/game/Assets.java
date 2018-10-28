@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.packtpub.libgdx.orb.util.Constants;
+import com.packtpub.libgdx.light.util.Constants;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -27,11 +27,9 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetOrb orb;
 	public AssetRock rock;
 	public AssetShard Shard;
-	public Assetember ember;
+	public AssetEmber ember;
 	public AssetLevelDecoration levelDecoration;
 	public AssetFonts fonts;
-	public AssetSounds sounds;
-	public AssetMusic music;
 	private AssetManager assetManager;
 
 	//singleton: prevent instantiation from other classes
@@ -50,17 +48,6 @@ public class Assets implements Disposable, AssetErrorListener {
 
 		//load texture atlas
 		assetManager.load(Constants.TEXTURE_ATLAS_OBJECTS, TextureAtlas.class);
-
-		// load sounds
-		assetManager.load("sounds/jump.wav", Sound.class);
-		assetManager.load("sounds/jump_with_ember.wav", Sound.class);
-		assetManager.load("sounds/pickup_shard.wav", Sound.class);
-		assetManager.load("sounds/pickup_ember.wav", Sound.class);
-		assetManager.load("sounds/live_lost.wav", Sound.class);
-		
-		// load music
-		assetManager.load("music/keith303_-_brand_new_highscore.mp3",
-		Music.class);
 		
 		//start loading assets and wait until finished
 		assetManager.finishLoading();
@@ -75,15 +62,6 @@ public class Assets implements Disposable, AssetErrorListener {
 		for(Texture t : atlas.getTextures()) {
 			t.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		}
-		//create game resource objects
-		fonts = new AssetFonts();
-		orb = new AssetOrb(atlas);
-		rock = new AssetRock(atlas);
-		Shard = new AssetShard(atlas);
-		ember = new Assetember(atlas);
-		levelDecoration = new AssetLevelDecoration(atlas);
-		sounds = new AssetSounds(assetManager);
-		music = new AssetMusic(assetManager);
 	}
 
 	// This inner class contains a member variable called "head"
@@ -117,10 +95,10 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 
 	// Builds the assets for embers
-	public class Assetember {
+	public class AssetEmber {
 		public final AtlasRegion ember;
 
-		public Assetember (TextureAtlas atlas) {
+		public AssetEmber (TextureAtlas atlas) {
 			ember = atlas.findRegion("item_ember");
 		}
 	}
@@ -189,37 +167,6 @@ public class Assets implements Disposable, AssetErrorListener {
 			TextureFilter.Linear, TextureFilter.Linear);
 			defaultBig.getRegion().getTexture().setFilter(
 			TextureFilter.Linear, TextureFilter.Linear);
-		}
-	}
-	
-	/*
-	 * asset sound method
-	 */
-	public class AssetSounds {
-		public final Sound jump;
-		public final Sound jumpWithEmber;
-		public final Sound pickupshard;
-		public final Sound pickupEmber;
-		public final Sound liveLost;
-		public AssetSounds (AssetManager am) {
-		jump = am.get("sounds/jump.wav", Sound.class);
-		jumpWithEmber = am.get("sounds/jump_with_ember.wav",
-		Sound.class);
-		pickupshard = am.get("sounds/pickup_shard.wav", Sound.class);
-		pickupEmber = am.get("sounds/pickup_ember.wav",
-		Sound.class);
-		liveLost = am.get("sounds/live_lost.wav", Sound.class);
-		}
-	}
-	
-	/*
-	 * asset music method
-	 * */
-	public class AssetMusic {
-		public final Music song01;
-		public AssetMusic (AssetManager am) {
-		song01 = am.get("music/keith303_-_brand_new_highscore.mp3",
-		Music.class);
 		}
 	}
 }

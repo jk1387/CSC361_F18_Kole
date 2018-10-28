@@ -1,17 +1,10 @@
 package com.packtpub.libgdx.light.game;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.packtpub.libgdx.light.util.Constants;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-//import com.packtpub.libgdx.light.util.GamePreferences;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 /**
  * This class renders the world's objects and its GUI.
@@ -48,7 +41,17 @@ public class WorldRenderer implements Disposable {
 	 * Calls renderWorld to draw the game objects of the loaded level.
 	 */
 	public void render () {
-
+		renderTestObjects();
+	}
+	
+	private void renderTestObjects() {
+		worldController.cameraHelper.applyTo(camera);
+		batch.setProjectionMatrix(camera.combined);
+		batch.begin();
+		for(Sprite sprite : worldController.testSprites) {
+			sprite.draw(batch);
+		}
+		batch.end();
 	}
 	
 	/**

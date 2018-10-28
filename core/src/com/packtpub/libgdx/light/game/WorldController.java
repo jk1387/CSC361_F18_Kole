@@ -11,31 +11,6 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.packtpub.libgdx.light.util.CameraHelper;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Array;
-//import com.packtpub.libgdx.canyonbunny.game.objects.Rock;
-import com.packtpub.libgdx.light.util.Constants;
-import com.badlogic.gdx.math.Rectangle;
-//import com.packtpub.libgdx.canyonbunny.util.AudioManager;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-//import com.packtpub.libgdx.canyonbunny.game.objects.Carrot;
-
-// specific objects
-//import com.packtpub.libgdx.canyonbunny.game.objects.orb;
-//import com.packtpub.libgdx.canyonbunny.game.objects.orb.JUMP_STATE;
-//import com.packtpub.libgdx.canyonbunny.game.objects.Feather;
-//import com.packtpub.libgdx.canyonbunny.game.objects.GoldCoin;
-//import com.packtpub.libgdx.canyonbunny.game.objects.Rock;
-
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.Game;
-//import com.packtpub.libgdx.canyonbunny.screens.MenuScreen;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
@@ -46,19 +21,19 @@ import com.badlogic.gdx.utils.Disposable;
  * @author Jacob Kole
  */
 public class WorldController extends InputAdapter implements Disposable {
-
 	private static final String TAG = 
 			WorldController.class.getName();
-	private Game game;
 	public CameraHelper cameraHelper;
+	
+	public Sprite[] testSprites;
+	public int selectedSprite;
 
 	/**
 	 * constructor for world controller
 	 * 
 	 * @param game instance of the game/BunnyMain
 	 */
-	public WorldController(Game game) {
-		this.game = game;
+	public WorldController() {
 		init();
 	}
 
@@ -68,14 +43,34 @@ public class WorldController extends InputAdapter implements Disposable {
 	private void init() {
 		Gdx.input.setInputProcessor(this);
 		cameraHelper = new CameraHelper();
-		initLevel();
+		initTestObjects();
 	}
 
-	/**
-	 * Level initialization method
-	 */
-	private void initLevel() {
-		cameraHelper.setTarget(level.orb);
+	private void initTestObjects() {
+		// Create new array for 5 sprites
+		testSprites = new Sprite[5];
+		// Create empty POT-sized Pixmap with 8 bit RGBA pixel data
+		int width = 32;
+		int height = 32;
+		Pixmap pixmap = createProceduralPixmap(width,height);
+		// Create a new texture from pixmap data
+		Texture texture = new Texture(pixmap);
+		// Create new sprites using the just created texture
+		for (int i = 0; i < testSprites.length; i++) {
+			Sprite spr = new Sprite(texture);
+			// Define sprite size to be 1m x 1m in game world
+			spr.setSize(1,  1);
+			// Set origin to sprite's center
+			spr.setOrigin(spr.getWidth() / 2.0f, spr.getHeight() / 2.0f);
+			// Calculate random position for sprite
+			float randomX = MathUtils.random(-2.0f, 2.0f);
+			float randomY = MathUtils.random(-2.0f, 2.0f);
+			spr.setPosition(randomX, randomY);
+			// Put new sprite into array
+			testSprites[i] = spr;
+		}
+		// Set first sprite as selected one
+		selectedSprite = 0;
 	}
 
 	/**
@@ -107,49 +102,68 @@ public class WorldController extends InputAdapter implements Disposable {
 	 * @param deltaTime the game time
 	 */
 	public void update(float deltaTime) {
-		//handleDebugInput(deltaTime);
+		handleDebugInput(deltaTime);
+		updateTestObjects(deltaTime);
+		cameraHelper.update(deltaTime);
 	}
+	
+	public void updateTestObjects(float deltaTime) {
+		// Get current rotation from selected sprite
+		float rotation = testSprites[selectedSprite].getRotation();
+		// Rotate sprite by 90 degrees per second
+		rotation += 90 * deltaTime;
+		// Wrap around at 360 degrees
+		rotation %= 360;
+		// Set new rotation value to selected sprite
+		testSprites[selectedSprite].setRotation(rotation);
+	}
+	
+	private void handleDebugInput(float deltaTime) {
+		if(Gdx.app.getType() != ApplicationType.Desktop) return;
+		
+		// Selected Sprite Controls
+		float sprMoveSpeed = 5 * deltaTime;
+		if (Gdx.input.isKeyPressed(Keys.A)) moveSelectedSprite(
+				-sprMoveSpeed, 0);
+		if (Gdx.input.isKeyPressed(Keys.D)) moveSelectedSprite(
+				sprMoveSpeed, 0); 
+		if (Gdx.input.isKeyPressed(Keys.W)) moveSelectedSprite(
+				0, sprMoveSpeed); 
+		if (Gdx.input.isKeyPressed(Keys.S)) moveSelectedSprite(
+				0, -sprMoveSpeed); 
 
-	/**
-	 * Add functionality behind every user input.
-	 * 
-	 * @param deltaTime game time
-	 */
-//	private void handleDebugInput(float deltaTime) {
-//		if (Gdx.app.getType() != ApplicationType.Desktop)
-//			return;
-//
-//		if (!cameraHelper.hasTarget(level.orb)) {
-//			// Camera Controls(move)
-//			float camMoveSpeed = 5 * deltaTime;
-//			float camMoveSpeedAccelerationFactor = 5;
-//			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
-//				camMoveSpeed *= camMoveSpeedAccelerationFactor;
-//			if (Gdx.input.isKeyPressed(Keys.LEFT))
-//				moveCamera(-camMoveSpeed, 0);
-//			if (Gdx.input.isKeyPressed(Keys.RIGHT))
-//				moveCamera(camMoveSpeed, 0);
-//			if (Gdx.input.isKeyPressed(Keys.UP))
-//				moveCamera(0, camMoveSpeed);
-//			if (Gdx.input.isKeyPressed(Keys.DOWN))
-//				moveCamera(0, -camMoveSpeed);
-//			if (Gdx.input.isKeyPressed(Keys.BACKSPACE))
-//				cameraHelper.setPosition(0, 0);
-//
-//			// Camera controls(zoom)
-//			float camZoomSpeed = 1 * deltaTime;
-//			float camZoomSpeedAccelerationFactor = 5;
-//			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
-//				camZoomSpeed *= camZoomSpeedAccelerationFactor;
-//			if (Gdx.input.isKeyPressed(Keys.COMMA))
-//				cameraHelper.addZoom(camZoomSpeed);
-//			if (Gdx.input.isKeyPressed(Keys.PERIOD))
-//				cameraHelper.addZoom(-camZoomSpeed);
-//			if (Gdx.input.isKeyPressed(Keys.SLASH))
-//				cameraHelper.setZoom(1);
-//
-//		}
-//	}
+		// Camera Controls(move)
+		float camMoveSpeed = 5 * deltaTime;
+		float camMoveSpeedAccelerationFactor = 5;
+		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
+			camMoveSpeed *= camMoveSpeedAccelerationFactor;
+		if (Gdx.input.isKeyPressed(Keys.LEFT))
+			moveCamera(-camMoveSpeed, 0);
+		if (Gdx.input.isKeyPressed(Keys.RIGHT))
+			moveCamera(camMoveSpeed, 0);
+		if (Gdx.input.isKeyPressed(Keys.UP))
+			moveCamera(0, camMoveSpeed);
+		if (Gdx.input.isKeyPressed(Keys.DOWN))
+			moveCamera(0, -camMoveSpeed);
+		if (Gdx.input.isKeyPressed(Keys.BACKSPACE))
+			cameraHelper.setPosition(0, 0);
+
+		// Camera controls(zoom)
+		float camZoomSpeed = 1 * deltaTime;
+		float camZoomSpeedAccelerationFactor = 5;
+		if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
+			camZoomSpeed *= camZoomSpeedAccelerationFactor;
+		if (Gdx.input.isKeyPressed(Keys.COMMA))
+			cameraHelper.addZoom(camZoomSpeed);
+		if (Gdx.input.isKeyPressed(Keys.PERIOD))
+			cameraHelper.addZoom(-camZoomSpeed);
+		if (Gdx.input.isKeyPressed(Keys.SLASH))
+			cameraHelper.setZoom(1);
+	}
+	
+	private void moveSelectedSprite (float x, float y) {
+		testSprites[selectedSprite].translate(x,  y);
+	}
 
 	/**
 	 * Controls the x and y movements of the camera.
@@ -174,15 +188,30 @@ public class WorldController extends InputAdapter implements Disposable {
 			init();
 			Gdx.app.debug(TAG, "Game world restarted");
 		}
+		// Select next sprite
+		else if (keycode == Keys.SPACE) {
+			selectedSprite = (selectedSprite + 1) % testSprites.length;
+			// Update camera's target to follow the currently selected sprite
+			if (cameraHelper.hasTarget()) {
+				cameraHelper.setTarget(testSprites[selectedSprite]);
+			}
+			Gdx.app.debug(TAG,  "Sprite #" + selectedSprite + " selected");
+		}
 		// Toggle camera follow
 		else if (keycode == Keys.ENTER) {
-			//cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.orb);
+			cameraHelper.setTarget(cameraHelper.hasTarget() ? null :
+				testSprites[selectedSprite]);
 			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
 		}
-		// Back to Menu
-		else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
-			//backToMenu();
-		}
+//		// Toggle camera follow
+//		else if (keycode == Keys.ENTER) {
+//			cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.orb);
+//			Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
+//		}
+//		// Back to Menu
+//		else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
+//			//backToMenu();
+//		}
 		return false;
 	}
 
