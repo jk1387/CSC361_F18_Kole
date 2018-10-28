@@ -48,7 +48,7 @@ import com.badlogic.gdx.utils.Disposable;
 public class WorldController extends InputAdapter implements Disposable {
 
 	private static final String TAG = WorldController.class.getName();
-	public Level level;
+	//public Level level;
 	public int lives;
 	public int score;
 	private Game game;
@@ -89,7 +89,7 @@ public class WorldController extends InputAdapter implements Disposable {
 	private void initLevel() {
 		score = 0;
 		scoreVisual = score;
-		level = new Level(Constants.LEVEL_01);
+		//level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.orb);
 	}
 
@@ -125,7 +125,7 @@ public class WorldController extends InputAdapter implements Disposable {
 		handleDebugInput(deltaTime);
 		handleInputGame(deltaTime);
 
-		level.update(deltaTime);
+		//level.update(deltaTime);
 		b2world.step(deltaTime, 8, 3);
 		cameraHelper.update(deltaTime);
 
@@ -210,37 +210,9 @@ public class WorldController extends InputAdapter implements Disposable {
 		}
 		// Back to Menu
 		else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
-			backToMenu();
+			//backToMenu();
 		}
 		return false;
-	}
-
-	/**
-	 * Handles the input keys for the game. These affect player movements in-game
-	 * and change the physics affecting the player.
-	 * 
-	 * @param deltaTime game time
-	 */
-	private void handleInputGame(float deltaTime) {
-		if (cameraHelper.hasTarget(level.orb)) {
-			// player movement
-			if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-				level.orb.velocity.x = -level.orb.terminalVelocity.x;
-			} else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-				level.orb.velocity.x = level.orb.terminalVelocity.x;
-			} else {
-				// Execute auto-forward movement on non-desktop platform
-				if (Gdx.app.getType() != ApplicationType.Desktop) {
-					level.orb.velocity.x = level.orb.terminalVelocity.x;
-				}
-			}
-			// Bunny Jump
-			if (Gdx.input.isTouched() || Gdx.input.isKeyPressed(Keys.SPACE)) {
-				level.orb.setJumping(true);
-			} else {
-				level.orb.setJumping(false);
-			}
-		}
 	}
 
 	/**
