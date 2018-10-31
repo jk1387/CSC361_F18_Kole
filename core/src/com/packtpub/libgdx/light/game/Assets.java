@@ -13,6 +13,7 @@ import com.packtpub.libgdx.light.util.Constants;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 /**
  * Loads up the assets and images.
@@ -29,6 +30,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetShard shard;
 	public AssetEmber ember;
 	public AssetLevelDecoration levelDecoration;
+	public AssetFonts fonts;
 
 
 	/**
@@ -65,6 +67,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		}
 		
 		// create game resource objects
+		fonts = new AssetFonts();
 		orb = new AssetOrb(atlas);
 		rock = new AssetRock(atlas);
 		shard = new AssetShard(atlas);
@@ -128,6 +131,38 @@ public class Assets implements Disposable, AssetErrorListener {
 			pillars = atlas.findRegion("pillars");
 		}
 	}
+	
+	/**
+	 * Builds the fonts.
+	 */
+	public class AssetFonts {
+		public final BitmapFont defaultSmall;
+		public final BitmapFont defaultNormal;
+		public final BitmapFont defaultBig;
+		
+		public AssetFonts () {
+			// create three fonts using Libgdx's 15px bitmap font
+			defaultSmall = new BitmapFont(
+			Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultNormal = new BitmapFont(
+			Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultBig = new BitmapFont(
+			Gdx.files.internal("images/arial-15.fnt"), true);
+			
+			// set font sizes
+			defaultSmall.getData().setScale(0.75f);
+			defaultNormal.getData().setScale(1.0f);
+			defaultBig.getData().setScale(2.0f);
+			
+			// enable linear texture filtering for smooth fonts
+			defaultSmall.getRegion().getTexture().setFilter(
+			TextureFilter.Linear, TextureFilter.Linear);
+			defaultNormal.getRegion().getTexture().setFilter(
+			TextureFilter.Linear, TextureFilter.Linear);
+			defaultBig.getRegion().getTexture().setFilter(
+			TextureFilter.Linear, TextureFilter.Linear);
+		}
+	}
 
 	/**
 	 * Disposes unused assets from the asset manager.
@@ -135,6 +170,9 @@ public class Assets implements Disposable, AssetErrorListener {
 	@Override
 	public void dispose() {
 		assetManager.dispose();
+		fonts.defaultSmall.dispose();
+		fonts.defaultNormal.dispose();
+		fonts.defaultBig.dispose();
 	}
 	
 	/**
