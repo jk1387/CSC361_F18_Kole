@@ -1,4 +1,4 @@
-package com.packtpub.libgdx.canyonbunny.game.objects;
+package com.packtpub.libgdx.light.game.objects;
 
 // rock assets
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
