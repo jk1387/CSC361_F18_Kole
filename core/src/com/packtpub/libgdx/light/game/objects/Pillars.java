@@ -29,7 +29,7 @@ public class Pillars extends AbstractGameObject {
 	// sets the dimensions of the mountains and pulls their assets from
 	// levelDecoration
 	private void init () {
-		dimension.set(10, 30);
+		dimension.set(10, 40);
 		
 		pillars = Assets.instance.levelDecoration.pillars;
 		
@@ -63,11 +63,11 @@ public class Pillars extends AbstractGameObject {
 	@Override
 	public void render (SpriteBatch batch) {
 		// 80% distant mountains (dark gray)
-		drawPillars(batch, 0.5f, 0.5f, 0.5f, 0.8f);
+		//drawPillars(batch, 0.5f, 0.5f, 0.5f, 0.8f);
 		// 50% distant mountains (gray)
 		drawPillars(batch, 0.25f, 0.25f, 0.7f, 0.5f);
 		// 30% distant mountains (light gray)
-		drawPillars(batch, 0.0f, 0.0f, 0.9f, 0.3f);
+		//drawPillars(batch, 0.0f, 0.0f, 0.9f, 0.3f);
 	}
 	
 	//update the scroll position

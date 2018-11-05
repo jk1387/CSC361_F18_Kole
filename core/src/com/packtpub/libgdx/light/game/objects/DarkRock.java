@@ -37,7 +37,8 @@ public class DarkRock extends AbstractGameObject {
 	 * to control the up and down movements of rocks. 
 	 */
 	private void init() {
-		dimension.set(1, 1.5f);
+		//dimension.set(1, 1.5f);
+		dimension.set(1.0f, 1.0f);
 
 		regEdge = Assets.instance.rock.edge;// set edge assets
 		regMiddle = Assets.instance.rock.middle; // set middle assets
