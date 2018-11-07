@@ -29,7 +29,7 @@ public class Pillars extends AbstractGameObject {
 	// sets the dimensions of the mountains and pulls their assets from
 	// levelDecoration
 	private void init () {
-		dimension.set(10, 40);
+		dimension.set(10, 50);
 		
 		pillars = Assets.instance.levelDecoration.pillars;
 		
@@ -46,7 +46,7 @@ public class Pillars extends AbstractGameObject {
 		
 		// mountains span the whole level
 		int mountainLength = 0;
-		mountainLength += MathUtils.ceil(length / (2 * dimension.x) * (1 - parallaxSpeedX));
+		mountainLength += MathUtils.ceil(length/* / (2 * dimension.x) */* (1 - parallaxSpeedX));
 		mountainLength += MathUtils.ceil(0.5f + offsetX);
 		for (int i = 0; i < mountainLength; i++) {
 			// mountain left

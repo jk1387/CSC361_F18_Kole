@@ -92,10 +92,12 @@ public class Assets implements Disposable, AssetErrorListener {
 	public class AssetRock {
 		public final AtlasRegion edge;
 		public final AtlasRegion middle;
+		public final AtlasRegion darkRock;
 
 		public AssetRock (TextureAtlas atlas) {
 			edge = atlas.findRegion("rock_edge");
 			middle = atlas.findRegion("rock_middle");
+			darkRock = atlas.findRegion("dark_rock");
 		}
 	}
 

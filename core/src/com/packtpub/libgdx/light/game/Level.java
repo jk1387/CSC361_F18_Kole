@@ -110,7 +110,7 @@ public class Level {
 				}
 				// rock
 				else if (BLOCK_TYPE.DARKROCK.sameColor(currentPixel)) {
-					if (lastPixel != currentPixel) {
+					//if (lastPixel != currentPixel) {
 						obj = new DarkRock();
 						// float heightIncreaseFactor = 0.25f;
 						offsetHeight = -2.5f;
@@ -119,9 +119,9 @@ public class Level {
 						obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
 						// set the rock then add it to the rocks array
 						darkRocks.add((DarkRock) obj);
-					} else {
-						darkRocks.get(darkRocks.size - 1).increaseLength(1);
-					}
+					//} else {
+					//	darkRocks.get(darkRocks.size - 1).increaseLength(1);
+					//}
 				}
 				// player spawn point
 				else if (BLOCK_TYPE.PLAYER_SPAWNPOINT.sameColor(currentPixel)) {

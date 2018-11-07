@@ -21,6 +21,7 @@ public class DarkRock extends AbstractGameObject {
 
 	private TextureRegion regEdge;
 	private TextureRegion regMiddle;
+	private TextureRegion regDarkRock;
 	
 	private int length;
 
@@ -40,6 +41,7 @@ public class DarkRock extends AbstractGameObject {
 		//dimension.set(1, 1.5f);
 		dimension.set(1.0f, 1.0f);
 
+		regDarkRock = Assets.instance.rock.darkRock;
 		regEdge = Assets.instance.rock.edge;// set edge assets
 		regMiddle = Assets.instance.rock.middle; // set middle assets
 
@@ -78,28 +80,34 @@ public class DarkRock extends AbstractGameObject {
 		float relX = 0;
 		float relY = 0;
 
-		// Draw left edge
-		reg = regEdge;
-		relX -= dimension.x / 4;
-		batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x, origin.y, dimension.x / 4 + 0.01f,
-				dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
-				reg.getRegionHeight(), false, false);
-
-		// Draw middle
-		relX = 0;
-		reg = regMiddle;
-		for (int i = 0; i < length; i++) {
-			batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x, origin.y, dimension.x + 0.01f,
-					dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
-					reg.getRegionHeight(), false, false);
-			relX += dimension.x;
-		}
-
-		// Draw right edge
-		reg = regEdge;
-		batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x + dimension.x / 8, origin.y,
-				dimension.x / 4, dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(),
-				reg.getRegionWidth(), reg.getRegionHeight(), true, false);
+		reg = regDarkRock;
+		batch.draw(reg.getTexture(), position.x, position.y,
+    			origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
+    			rotation, reg.getRegionX(), reg.getRegionY(),
+    			reg.getRegionWidth(), reg.getRegionHeight(), false, false);
+		
+//		// Draw left edge
+//		reg = regEdge;
+//		relX -= dimension.x / 4;
+//		batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x, origin.y, dimension.x / 4 + 0.01f,
+//				dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
+//				reg.getRegionHeight(), false, false);
+//
+//		// Draw middle
+//		relX = 0;
+//		reg = regMiddle;
+//		for (int i = 0; i < length; i++) {
+//			batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x, origin.y, dimension.x + 0.01f,
+//					dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
+//					reg.getRegionHeight(), false, false);
+//			relX += dimension.x;
+//		}
+//
+//		// Draw right edge
+//		reg = regEdge;
+//		batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x + dimension.x / 8, origin.y,
+//				dimension.x / 4, dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(),
+//				reg.getRegionWidth(), reg.getRegionHeight(), true, false);
 	}
 
 	/**
