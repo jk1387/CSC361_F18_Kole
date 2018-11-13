@@ -77,7 +77,7 @@ public class WorldController extends InputAdapter implements Disposable {
 	 * Initialize the world controller. Set lives. Get a CameraHelper.
 	 */
 	private void init() {
-		world = new World(new Vector2(0, -9.81f), true);
+		world = new World(new Vector2(0, -20.0f), true);
 		Gdx.input.setInputProcessor(this);
 		cameraHelper = new CameraHelper();
 		life = Constants.LIVES_START;
@@ -157,8 +157,8 @@ public class WorldController extends InputAdapter implements Disposable {
 	public void update(float deltaTime) {
 		world.step(Gdx.graphics.getDeltaTime(), 4, 4);
 		handleDebugInput(deltaTime);
-		handleInputGame(deltaTime);
-		//playerMovement();
+		//handleInputGame(deltaTime);
+		playerMovement();
 		
 		//world.step(Gdx.graphics.getDeltaTime(), 4, 4);
 		//level.orb.body.setAwake(true);
@@ -195,8 +195,8 @@ public class WorldController extends InputAdapter implements Disposable {
 		
 		// Set velocity of player
 		level.orb.body.setLinearVelocity(velocity);
-		System.out.println("Vel: " + level.orb.body.getLinearVelocity());
-		System.out.println("Position: " + level.orb.body.getPosition());
+		//System.out.println("Vel: " + level.orb.body.getLinearVelocity());
+		//System.out.println("Position: " + level.orb.body.getPosition());
 	}
 
 	private void playerMovement() {
@@ -210,8 +210,9 @@ public class WorldController extends InputAdapter implements Disposable {
 		Vector2 pos = level.orb.body.getPosition();
 		//Vector2 vel = level.orb.velocity;
 		//Vector2 pos = level.orb.position;
-		System.out.println(vel + " and " + pos);
+		System.out.println(level.orb.body.getLinearVelocity());
 		boolean grounded = isPlayerGrounded(Gdx.graphics.getDeltaTime());
+		System.out.println(grounded);
 		if (grounded) {
 			lastGroundTime = System.nanoTime();
 		} else {
@@ -269,14 +270,14 @@ public class WorldController extends InputAdapter implements Disposable {
 		// jump, but only when grounded
 		if (jump) {
 			jump = false;
-			if (grounded) {
+			//if (grounded) {
 //				player.setLinearVelocity(vel.x, 0);			
 //				player.setTransform(pos.x, pos.y + 0.01f, 0);
 //				player.applyLinearImpulse(0, 30, pos.x, pos.y, true);
 				level.orb.body.setLinearVelocity(vel.x, 0);
 				level.orb.body.setTransform(pos.x, pos.y + 0.01f, 0);
-				level.orb.body.applyLinearImpulse(0, 30, pos.x, pos.y, true);
-			}
+				level.orb.body.applyLinearImpulse(0, 10, pos.x, pos.y, true);
+			//}
 		}
 
 		// le step...
@@ -374,7 +375,7 @@ public class WorldController extends InputAdapter implements Disposable {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Keys.W) {
+		if (keycode == Keys.SPACE) {
 			jump = true;
 		}
 		return false;
