@@ -69,6 +69,7 @@ public class Level {
 	 */
 	public Level(String filename) {
 		init(filename);
+		orb.body.setTransform(orb.position, 0);
 	}
 
 	/**
@@ -126,10 +127,12 @@ public class Level {
 				// player spawn point
 				else if (BLOCK_TYPE.PLAYER_SPAWNPOINT.sameColor(currentPixel)) {
 					obj = new Orb();
-					//offsetHeight = -3.0f;
-					offsetHeight = -2.5f;
+					//offsetHeight = -2.5f;
+					//offsetHeight = -20.5f;
 					obj.position.set(pixelX, baseHeight * obj.dimension.y + offsetHeight);
+					//obj.bodyDef.position.set(obj.position);
 					orb = (Orb) obj;
+					//orb.bodyDef.position.set(orb.position);
 				}
 				// embers
 				else if (BLOCK_TYPE.ITEM_EMBER.sameColor(currentPixel)) {

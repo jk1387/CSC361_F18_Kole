@@ -21,7 +21,7 @@ public class CameraHelper {
 	private final float MAX_ZOOM_OUT = 10.0f;
 	
 	// position, zoom, target variables
-	private Vector2 position;
+	public Vector2 position;
 	private float zoom;
 	
 	private AbstractGameObject target;
