@@ -8,6 +8,10 @@ import com.packtpub.libgdx.light.game.Assets;
 // used for rock movements
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 /**
  * Rocks are the platforms the BunnyHead stands and jumps on. These are the
@@ -40,6 +44,16 @@ public class DarkRock extends AbstractGameObject {
 	private void init() {
 		//dimension.set(1, 1.5f);
 		dimension.set(1.0f, 1.0f);
+		//bounds.set(0, 0, 1.0f, 1.0f);
+		
+//		bodyDef = new BodyDef();
+//		bodyDef.type = BodyType.StaticBody;
+//		body = world.createBody(bodyDef);
+//		
+//		poly = new PolygonShape();
+//		poly.setAsBox(1.0f, 1.0f);
+//		body.createFixture(poly, 1);
+//		poly.dispose();
 
 		regDarkRock = Assets.instance.rock.darkRock;
 		regEdge = Assets.instance.rock.edge;// set edge assets
@@ -55,6 +69,8 @@ public class DarkRock extends AbstractGameObject {
 	 */
 	public void setLength(int length) {
 		this.length = length; // set rock length to val
+		
+		bounds.set(0, 0, dimension.x, dimension.y);
 	}
 
 	/**
@@ -77,37 +93,11 @@ public class DarkRock extends AbstractGameObject {
 	public void render(SpriteBatch batch) {
 		TextureRegion reg = null;
 
-		float relX = 0;
-		float relY = 0;
-
 		reg = regDarkRock;
 		batch.draw(reg.getTexture(), position.x, position.y,
     			origin.x, origin.y, dimension.x, dimension.y, scale.x, scale.y,
     			rotation, reg.getRegionX(), reg.getRegionY(),
     			reg.getRegionWidth(), reg.getRegionHeight(), false, false);
-		
-//		// Draw left edge
-//		reg = regEdge;
-//		relX -= dimension.x / 4;
-//		batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x, origin.y, dimension.x / 4 + 0.01f,
-//				dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
-//				reg.getRegionHeight(), false, false);
-//
-//		// Draw middle
-//		relX = 0;
-//		reg = regMiddle;
-//		for (int i = 0; i < length; i++) {
-//			batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x, origin.y, dimension.x + 0.01f,
-//					dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(),
-//					reg.getRegionHeight(), false, false);
-//			relX += dimension.x;
-//		}
-//
-//		// Draw right edge
-//		reg = regEdge;
-//		batch.draw(reg.getTexture(), position.x + relX, position.y + relY, origin.x + dimension.x / 8, origin.y,
-//				dimension.x / 4, dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(),
-//				reg.getRegionWidth(), reg.getRegionHeight(), true, false);
 	}
 
 	/**
