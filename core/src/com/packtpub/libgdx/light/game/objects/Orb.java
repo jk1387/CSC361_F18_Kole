@@ -77,6 +77,7 @@ public class Orb extends AbstractGameObject {
 //		circle.setPosition(new Vector2(0, -1.4f));
 		circle.setRadius(0.18f);
 		circle.setPosition(origin);
+		playerPhysicsFixture = box.createFixture(circle, 0);
 		playerSensorFixture = box.createFixture(circle, 0);
 		circle.dispose();
 		
