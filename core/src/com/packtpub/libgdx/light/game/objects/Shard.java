@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.packtpub.libgdx.light.game.Assets;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 /**
  * Shards give additional time to your clock, ultimately
@@ -13,6 +15,8 @@ import com.badlogic.gdx.math.MathUtils;
 public class Shard extends AbstractGameObject {
 	private TextureRegion regShard;
 	public boolean collected;
+	
+	public Fixture fixture;
 	
 	/**
 	 * Constructor to initialize the shard.
@@ -28,11 +32,14 @@ public class Shard extends AbstractGameObject {
     	dimension.set(0.5f, 0.5f);
     	//setAnimation(Assets.instance.goldCoin.animGoldCoin);
     	//stateTime = MathUtils.random(0.0f,1.0f);
+    	origin.set(dimension.x / 2, dimension.y / 2);
+		bounds.set(0, 0, dimension.x, dimension.y);
     	
     	regShard = Assets.instance.shard.shard;
     	 // Set bounding box for collision detection
     	//bounds.set(0,0,dimension.x, dimension.y);
     	collected = false;
+    	//body.setUserData(this);
     }
     
     /**

@@ -55,6 +55,8 @@ public abstract class AbstractGameObject {
 		acceleration = new Vector2();
 		bounds = new Rectangle();
 		
+		//body.setUserData(this);
+		
 //		BodyDef def = new BodyDef();
 //		def.type = BodyType.StaticBody;
 //		bodyDef.position.set(new Vector2(0, 0));

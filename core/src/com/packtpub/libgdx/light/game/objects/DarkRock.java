@@ -23,8 +23,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
  */
 public class DarkRock extends AbstractGameObject {
 
-	private TextureRegion regEdge;
-	private TextureRegion regMiddle;
 	private TextureRegion regDarkRock;
 	
 	private int length;
@@ -56,8 +54,6 @@ public class DarkRock extends AbstractGameObject {
 //		poly.dispose();
 
 		regDarkRock = Assets.instance.rock.darkRock;
-		regEdge = Assets.instance.rock.edge;// set edge assets
-		regMiddle = Assets.instance.rock.middle; // set middle assets
 
 		// Start length of this rock
 		setLength(1);

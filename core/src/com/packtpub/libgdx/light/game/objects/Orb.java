@@ -37,13 +37,10 @@ public class Orb extends AbstractGameObject {
 	public Fixture playerSensorFixture;
 	
 	public float movementSpeed = 5.0f;
-	
-//	public Body body;
 
 	public Orb() {
 		super();
 		init();
-		//System.out.println("----------------->" + position + " , " + body.getPosition());
 	}
 
 	public void init() {
@@ -54,13 +51,6 @@ public class Orb extends AbstractGameObject {
 		// Center image on game object
 		origin.set(dimension.x / 2, dimension.y / 2);
 		bounds.set(0, 0, dimension.x, dimension.y);
-		
-		//bodyDef.position.set(position);
-		
-		// Set physics values
-//		terminalVelocity.set(3.0f, 4.0f);
-//		friction.set(12.0f, 0.0f);
-//		acceleration.set(0.0f, -25.0f);
 		
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -82,6 +72,7 @@ public class Orb extends AbstractGameObject {
 		circle.dispose();
 		
 		body = box;
+		body.setUserData(this);
 	};
 
 	@Override

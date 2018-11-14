@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.WorldManifold;
@@ -20,6 +21,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -30,7 +33,9 @@ import com.packtpub.libgdx.light.util.CameraHelper;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.packtpub.libgdx.light.game.objects.AbstractGameObject;
 import com.packtpub.libgdx.light.game.objects.DarkRock;
+import com.packtpub.libgdx.light.game.objects.Shard;
 import com.packtpub.libgdx.light.util.Constants;
 
 /**
@@ -40,7 +45,7 @@ import com.packtpub.libgdx.light.util.Constants;
  * 
  * @author Jacob Kole
  */
-public class WorldController extends InputAdapter implements Disposable {
+public class WorldController extends InputAdapter implements Disposable, ContactListener {
 	private static final String TAG = WorldController.class.getName();
 	public CameraHelper cameraHelper;
 
@@ -52,17 +57,14 @@ public class WorldController extends InputAdapter implements Disposable {
 	public float scoreVisual;
 
 	// BOX2D STUFF
+	public static World world; // contains all the box2d bodies and fixtures
 	final static float MAX_VELOCITY = 7f; // move speed outside method to not create it each frame.
 	boolean jump = false;
-	public static World world;
-	Body player;
-	Fixture playerPhysicsFixture;
-	Fixture playerSensorFixture;
-	OrthographicCamera cam;
-	Box2DDebugRenderer renderer;
-	DarkRock groundedPlatform = null;
 	float stillTime = 0;
 	long lastGroundTime = 0;
+	AbstractGameObject touchedObject;
+	DarkRock groundedPlatform = null;
+	Shard shardFound = null;
 
 	/**
 	 * constructor for world controller
@@ -79,6 +81,7 @@ public class WorldController extends InputAdapter implements Disposable {
 	private void init() {
 		world = new World(new Vector2(0, -20.0f), true);
 		Gdx.input.setInputProcessor(this);
+		world.setContactListener(this);
 		cameraHelper = new CameraHelper();
 		life = Constants.LIVES_START;
 		initLevel();
@@ -90,8 +93,6 @@ public class WorldController extends InputAdapter implements Disposable {
 	private void initLevel() {
 		time = 100;
 		level = new Level(Constants.LEVEL_01);
-		// player = createPlayer();
-		// level.orb.body = createPlayer();
 		cameraHelper.setTarget(level.orb);
 		initPhysics();
 	}
@@ -112,7 +113,6 @@ public class WorldController extends InputAdapter implements Disposable {
 			bodyDef.type = BodyType.StaticBody;
 			bodyDef.position.set(rock.position);
 			Body body = world.createBody(bodyDef);
-			//body.setTransform(rock.position, 0);
 			rock.body = body;
 			PolygonShape polygonShape = new PolygonShape();
 			origin.x = rock.bounds.width / 2.0f;
@@ -120,8 +120,31 @@ public class WorldController extends InputAdapter implements Disposable {
 			polygonShape.setAsBox(rock.bounds.width / 2.0f, rock.bounds.height / 2.0f, origin, 0);
 			FixtureDef fixtureDef = new FixtureDef();
 			fixtureDef.shape = polygonShape;
-			body.createFixture(fixtureDef);
+			rock.body.createFixture(fixtureDef);
 			polygonShape.dispose();
+		}
+		
+		// Shards
+		for (Shard shard : level.shards) {
+			BodyDef bodyDef = new BodyDef();
+			bodyDef.type = BodyType.StaticBody;
+			bodyDef.position.set(shard.position);
+			Body body = world.createBody(bodyDef);
+			shard.body = body;
+			CircleShape circle = new CircleShape();
+			origin.x = shard.bounds.width / 2.0f;
+			origin.y = shard.bounds.height / 2.0f;
+			circle.setRadius(0.18f);
+			//circle.setRadius(0.5f);
+			circle.setPosition(origin);
+			FixtureDef fixtureDef = new FixtureDef();
+			fixtureDef = new FixtureDef();
+			fixtureDef.shape = circle;
+			fixtureDef.isSensor = true;
+			shard.body.createFixture(fixtureDef);
+			//shard.body.createFixture(circle, 0);
+			circle.dispose();
+			shard.body.setUserData(shard);
 		}
 	}
 
@@ -168,51 +191,47 @@ public class WorldController extends InputAdapter implements Disposable {
 		level.update(deltaTime);
 	}
 	
+//	/**
+//	 * Handles the input keys for the game. These affect
+//	 * player movements in-game and change the physics affecting
+//	 * the player.
+//	 * @param deltaTime game time
+//	 */
+//	private void handleInputGame(float deltaTime) {
+//		Vector2 velocity = new Vector2(0, 0);
+//		
+//		// Horizontal Movement
+//		if (Gdx.input.isKeyPressed(Keys.D)) {
+//			velocity.x += level.orb.movementSpeed;
+//		} else if (Gdx.input.isKeyPressed(Keys.A)) {
+//			velocity.x -= level.orb.movementSpeed;
+//		}
+//		
+//		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+//			velocity.y += 10;
+//			level.orb.body.applyLinearImpulse(velocity, level.orb.body.getPosition(), true);
+//		}
+//		
+//		// Set velocity of player
+//		level.orb.body.setLinearVelocity(velocity);
+//	}
+
 	/**
 	 * Handles the input keys for the game. These affect
 	 * player movements in-game and change the physics affecting
 	 * the player.
 	 * @param deltaTime game time
 	 */
-	private void handleInputGame(float deltaTime) {
-		Vector2 velocity = new Vector2(0, 0);
-		
-		// Horizontal Movement
-		if (Gdx.input.isKeyPressed(Keys.D)) {
-			velocity.x += level.orb.movementSpeed;
-		} else if (Gdx.input.isKeyPressed(Keys.A)) {
-			velocity.x -= level.orb.movementSpeed;
-		}
-		
-		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
-			//level.orb.body.setLinearVelocity(velocity.x, 0);
-			//level.orb.body.setTransform(pos.x, pos.y + 0.01f, 0);
-			//level.orb.body.applyLinearImpulse(0, 30, pos.x, pos.y, true);
-			//velocity.y += 30;
-			velocity.y += 10;
-			level.orb.body.applyLinearImpulse(velocity, level.orb.body.getPosition(), true);
-		}
-		
-		// Set velocity of player
-		level.orb.body.setLinearVelocity(velocity);
-		//System.out.println("Vel: " + level.orb.body.getLinearVelocity());
-		//System.out.println("Position: " + level.orb.body.getPosition());
-	}
-
 	private void playerMovement() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		cameraHelper.position.set(player.getPosition().x, player.getPosition().y);
-		//cameraHelper.position.set(level.orb.body.getPosition().x, level.orb.body.getPosition().y);
 
-//		Vector2 vel = player.getLinearVelocity();
-//		Vector2 pos = player.getPosition();
 		Vector2 vel = level.orb.body.getLinearVelocity();
 		Vector2 pos = level.orb.body.getPosition();
-		//Vector2 vel = level.orb.velocity;
-		//Vector2 pos = level.orb.position;
-		System.out.println(level.orb.body.getLinearVelocity());
+		//System.out.println(level.orb.body.getLinearVelocity());//--------------------------------------------
 		boolean grounded = isPlayerGrounded(Gdx.graphics.getDeltaTime());
-		System.out.println(grounded);
+		//boolean touching = isShard(Gdx.graphics.getDeltaTime());
+		//isShard(Gdx.graphics.getDeltaTime());
+		//System.out.println(grounded);//-----------------------------------------------------------------------
 		if (grounded) {
 			lastGroundTime = System.nanoTime();
 		} else {
@@ -224,14 +243,12 @@ public class WorldController extends InputAdapter implements Disposable {
 		// cap max velocity on x
 		if (Math.abs(vel.x) > MAX_VELOCITY) {
 			vel.x = Math.signum(vel.x) * MAX_VELOCITY;
-//			player.setLinearVelocity(vel.x, vel.y);
 			level.orb.body.setLinearVelocity(vel.x, vel.y);
 		}
 
 		// calculate stilltime & damp
 		if (!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)) {
 			stillTime += Gdx.graphics.getDeltaTime();
-//			player.setLinearVelocity(vel.x * 0.9f, vel.y);
 			level.orb.body.setLinearVelocity(vel.x * 0.9f, vel.y);
 		} else {
 			stillTime = 0;
@@ -257,52 +274,50 @@ public class WorldController extends InputAdapter implements Disposable {
 
 		// apply left impulse, but only if max velocity is not reached yet
 		if (Gdx.input.isKeyPressed(Keys.A) && vel.x > -MAX_VELOCITY) {
-//			player.applyLinearImpulse(-2f, 0, pos.x, pos.y, true);
 			level.orb.body.applyLinearImpulse(-2f, 0, pos.x, pos.y, true);
 		}
 
 		// apply right impulse, but only if max velocity is not reached yet
 		if (Gdx.input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
-//			player.applyLinearImpulse(2f, 0, pos.x, pos.y, true);
 			level.orb.body.applyLinearImpulse(2f, 0, pos.x, pos.y, true);
 		}
 
 		// jump, but only when grounded
 		if (jump) {
 			jump = false;
-			//if (grounded) {
-//				player.setLinearVelocity(vel.x, 0);			
-//				player.setTransform(pos.x, pos.y + 0.01f, 0);
-//				player.applyLinearImpulse(0, 30, pos.x, pos.y, true);
+			if (grounded) {
 				level.orb.body.setLinearVelocity(vel.x, 0);
 				level.orb.body.setTransform(pos.x, pos.y + 0.01f, 0);
 				level.orb.body.applyLinearImpulse(0, 10, pos.x, pos.y, true);
-			//}
+			}
 		}
-
-		// le step...
-//		world.step(Gdx.graphics.getDeltaTime(), 4, 4);
-////		player.setAwake(true);
-//		level.orb.body.setAwake(true);
 	}
 
+	/**
+	 * Detects when the player is grounded on some kind of rock. This also counts when
+	 * the player is against a wall so they can wall-jump.
+	 * @param deltaTime time passed between updates
+	 * @return true if player is on the ground or a wall
+	 */
 	private boolean isPlayerGrounded(float deltaTime) {
 		groundedPlatform = null;
 		Array<Contact> contactList = world.getContactList();
 		for (int i = 0; i < contactList.size; i++) {
 			Contact contact = contactList.get(i);
 			if (contact.isTouching()
-					&& (contact.getFixtureA() == playerSensorFixture || contact.getFixtureB() == playerSensorFixture)) {
+					&& (contact.getFixtureA() == level.orb.playerSensorFixture || contact.getFixtureB() == level.orb.playerSensorFixture)) {
 
 //				Vector2 pos = player.getPosition();
 				Vector2 pos = level.orb.body.getPosition();
 				WorldManifold manifold = contact.getWorldManifold();
 				boolean below = true;
+				//System.out.println("Player HAS TOUCHED DOWN");
 				for (int j = 0; j < manifold.getNumberOfContactPoints(); j++) {
-					below &= (manifold.getPoints()[j].y < pos.y - 1.5f);
+					below &= (manifold.getPoints()[j].y > pos.y - 1.5f);
 				}
 
 				if (below) {
+					//System.out.println("BELOW");
 					if (contact.getFixtureA().getUserData() != null
 							&& contact.getFixtureA().getUserData().equals("p")) {
 						groundedPlatform = (DarkRock) contact.getFixtureA().getBody().getUserData();
@@ -320,6 +335,52 @@ public class WorldController extends InputAdapter implements Disposable {
 		}
 		return false;
 	}
+	
+//	/**
+//	 * Detects when the player collides with a Shard.
+//	 * @param deltaTime the time passed between updates
+//	 */
+//	private void isShard(float deltaTime) {
+//		shardFound = null;
+//		Array<Contact> contactList = world.getContactList();
+//		for (int i = 0; i < contactList.size; i++) {
+//			Contact contact = contactList.get(i);
+//			if (contact.isTouching()
+//					//&& (contact.getFixtureA() == level.orb.playerSensorFixture || contact.getFixtureB() == level.orb.playerSensorFixture)) {
+//					&& (contact.getFixtureA() == level.orb.playerSensorFixture || contact.getFixtureB() == level.shards.get(i).fixture)) {
+//				
+//				//Vector2 pos = player.getPosition();
+//				Vector2 pos = level.orb.body.getPosition();
+//				WorldManifold manifold = contact.getWorldManifold();
+//				boolean below = true;
+//				//System.out.println("Player HAS TOUCHED DOWN");
+//				for (int j = 0; j < manifold.getNumberOfContactPoints(); j++) {
+//					below &= (manifold.getPoints()[j].y > pos.y - 1.5f);
+//				}
+//
+//				if (below) {
+//					//System.out.println("SHARD");
+//					if (contact.getFixtureA().getUserData() != null
+//							&& contact.getFixtureA().getUserData().equals("p")) {
+//						shardFound = (Shard) contact.getFixtureA().getBody().getUserData();
+//						System.out.println("Destroyed1");
+//						//shardFound.body.destroyFixture(shardFound.fixture);
+//					}
+//
+//					if (contact.getFixtureB().getUserData() != null
+//							&& contact.getFixtureB().getUserData().equals("p")) {
+//						shardFound = (Shard) contact.getFixtureB().getBody().getUserData();
+//						System.out.println("Destroyed2");
+//						//shardFound.body.destroyFixture(shardFound.fixture);
+//					}
+////					return true;
+//				}
+//
+////				return false;
+//			}
+//		}
+////		return false;
+//	}
 
 	/**
 	 * Handles all the debug inputs.
@@ -373,6 +434,10 @@ public class WorldController extends InputAdapter implements Disposable {
 		cameraHelper.setPosition(x, y);
 	}
 
+	/**
+	 * Detects when the space bar is pressed down, thus
+	 * activating the jump boolean.
+	 */
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.SPACE) {
@@ -414,5 +479,41 @@ public class WorldController extends InputAdapter implements Disposable {
 	public void dispose() {
 		if (world != null)
 			world.dispose();
+	}
+	
+	int randomInt = 0;
+	
+	@Override
+	public void beginContact(Contact contact) {
+		//System.out.println("CONTACT");
+		if(contact.getFixtureA().getBody().getUserData() == level.orb && contact.getFixtureB().getBody().getUserData().getClass() == Shard.class 
+				&& contact.getFixtureB().isSensor()) { // player and is a sensor
+			touchedObject = (AbstractGameObject) contact.getFixtureB().getBody().getUserData();
+			System.out.println("Touched a Shard\n-------" + randomInt++);
+		} else if(contact.getFixtureB().getBody().getUserData() == level.orb && contact.getFixtureA().isSensor()) {
+			touchedObject = (AbstractGameObject) contact.getFixtureA().getBody().getUserData();
+			System.out.println("B touched A");
+		}
+	}
+
+	@Override
+	public void endContact(Contact contact) {
+		if(contact.getFixtureA().getBody().getUserData() == touchedObject) {
+			touchedObject = null;
+		} else if(contact.getFixtureB().getBody().getUserData() == touchedObject) {
+			touchedObject = null;
+		}
+	}
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+		// TODO Auto-generated method stub
+		
 	}
 }
