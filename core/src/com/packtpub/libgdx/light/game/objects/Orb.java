@@ -36,13 +36,20 @@ public class Orb extends AbstractGameObject {
 	public Fixture playerPhysicsFixture;
 	public Fixture playerSensorFixture;
 	
-	public float movementSpeed = 5.0f;
+	public float movementSpeed = 5.0f; // currently not used
 
+	/**
+	 * Orb is the player. It has dimensions and a box2d body,
+	 * along with a circular shape.
+	 */
 	public Orb() {
 		super();
 		init();
 	}
 
+	/**
+	 * Initialize all the variables for the player.
+	 */
 	public void init() {
 		//body.getWorld().destroyBody(body);
 		// chapter 6
@@ -75,11 +82,18 @@ public class Orb extends AbstractGameObject {
 		body.setUserData(this);
 	};
 
+	/**
+	 * Calls the update for player. This updates the
+	 * box2d's body position.
+	 */
 	@Override
 	public void update(float deltaTime) {		
 		super.update(deltaTime);
 	}
 
+	/**
+	 * Render the body's new position.
+	 */
 	@Override
 	public void render(SpriteBatch batch) {
 		TextureRegion reg = null;

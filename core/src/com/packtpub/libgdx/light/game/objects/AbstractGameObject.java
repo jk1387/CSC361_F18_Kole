@@ -28,11 +28,6 @@ public abstract class AbstractGameObject {
 	public float rotation;
 	public Rectangle bounds;
 	
-	public Vector2 velocity;
-	public Vector2 terminalVelocity;
-	public Vector2 friction;
-	public Vector2 acceleration;
-	
 	public Body body;
 	public BodyDef bodyDef;
 	public PolygonShape poly;
@@ -48,31 +43,11 @@ public abstract class AbstractGameObject {
 		scale = new Vector2(1, 1);
 		rotation = 0;
 		bounds = new Rectangle();
-		
-		velocity = new Vector2();
-		terminalVelocity = new Vector2(1, 1);
-		friction = new Vector2();
-		acceleration = new Vector2();
-		bounds = new Rectangle();
-		
-		//body.setUserData(this);
-		
-//		BodyDef def = new BodyDef();
-//		def.type = BodyType.StaticBody;
-//		bodyDef.position.set(new Vector2(0, 0));
-//		
-//		body = WorldController.world.createBody(def);
-//
-//		PolygonShape poly = new PolygonShape();
-//		poly.setAsBox(0.5f, 0.5f);
-//		
-//		body.createFixture(poly, 0.0f);
-//		
-//		poly.dispose();
 	}
 	
 	/**
-	 * Update method for the abstract game object class.
+	 * Update method for the abstract game object class. Updates the 
+	 * position of all box2d bodies.
 	 * @param deltaTime time between updates
 	 */
 	public void update (float deltaTime) {

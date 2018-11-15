@@ -20,14 +20,18 @@ public class Pillars extends AbstractGameObject {
 	// Length of the mountains
 	private int length;
 	
-	// Constructor to set the length range of the maintains and initiate them
+	/**
+	 * Constructor to set the length range of the pillars and initiate them
+	 * @param length the length of the pillars
+	 */
 	public Pillars (int length) {
 		this.length = length;
 		init();
 	}
 	
-	// sets the dimensions of the mountains and pulls their assets from
-	// levelDecoration
+	/**
+	 * Sets the dimensions of the pillars and pulls their assets from levelDecoration.
+	 */
 	private void init () {
 		dimension.set(10, 50);
 		
@@ -38,6 +42,14 @@ public class Pillars extends AbstractGameObject {
 		length += dimension.x;
 	}
 	
+	/**
+	 * Draw one set of pillars in the background, stretch them to cover the whole level. Vertically and horizontally.
+	 * @param batch the batch of sprites
+	 * @param offsetX x offset coord
+	 * @param offsetY y offset coord
+	 * @param tintColor change the color overlay
+	 * @param parallaxSpeedX scroll speed effect
+	 */
 	private void drawPillars (SpriteBatch batch, float offsetX, float offsetY, float tintColor, float parallaxSpeedX) {
 		TextureRegion reg = null;
 		batch.setColor(tintColor, tintColor, tintColor, 1);
@@ -60,6 +72,9 @@ public class Pillars extends AbstractGameObject {
 		batch.setColor(1, 1, 1, 1);
 	}
 	
+	/**
+	 * Draw the pillars once at a set distance.
+	 */
 	@Override
 	public void render (SpriteBatch batch) {
 		// 80% distant mountains (dark gray)
@@ -70,8 +85,12 @@ public class Pillars extends AbstractGameObject {
 		//drawPillars(batch, 0.0f, 0.0f, 0.9f, 0.3f);
 	}
 	
+	/**
+	 * Scroll the pillars by at a different speed to add depth.
+	 * @param camPosition position of the camera
+	 */
 	//update the scroll position
 	public void updateScrollPosition (Vector2 camPosition) {
 		position.set(camPosition.x, position.y);
-		}
+	}
 }
