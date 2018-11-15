@@ -14,7 +14,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
  */
 public class Shard extends AbstractGameObject {
 	private TextureRegion regShard;
-	//public boolean collected;
+	public boolean collected;
 	
 	//public Fixture fixture;
 	

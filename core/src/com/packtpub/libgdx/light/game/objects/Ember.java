@@ -14,8 +14,7 @@ public class Ember extends AbstractGameObject {
 	// texture region for the feather
 	private TextureRegion regEmber;
 	
-	// has the bunnyhead collided with the feather
-	public boolean collected;
+	public boolean emberCollected;
 	
 	/**
 	 * Initialize the feather.
@@ -36,10 +35,10 @@ public class Ember extends AbstractGameObject {
 		regEmber = Assets.instance.ember.ember;
 		
 		// Set bounding box for collision detection
-		//bounds.set(0, 0, dimension.x, dimension.y);
+		bounds.set(0, 0, dimension.x, dimension.y);
 		
 		// flag for item collection
-		collected = false;
+		emberCollected = false;
 	}
 	
 	/**
@@ -47,7 +46,7 @@ public class Ember extends AbstractGameObject {
 	 */
 	public void render (SpriteBatch batch) {
 		// if it's collected, don't render
-		if (collected) return;
+		if (emberCollected) return;
 		
 		// reset the texture region
 		TextureRegion reg = null;
@@ -63,6 +62,6 @@ public class Ember extends AbstractGameObject {
 	 * @return
 	 */
 	public int getScore() {
-		return 250;
+		return 25;
 	}
 }

@@ -279,14 +279,14 @@ public class WorldRenderer implements Disposable {
 		float x = -15;
 		float y = 30;
 		// checks how much time is left for the power-up
-		float timeLeftFeatherPowerup = 
+		float timeLeftEmberPowerup = 
 				worldController.level.orb.timeLeftEmberPowerup;
-		if (timeLeftFeatherPowerup > 0) {
+		if (timeLeftEmberPowerup > 0) {
 			// Start icon fade in/out if the left power-up time
 			// is less than 4 seconds. The fade interval is set
 			// to 5 changes per second.
-			if (timeLeftFeatherPowerup < 4) {
-				if (((int)(timeLeftFeatherPowerup * 5) % 2) != 0) {
+			if (timeLeftEmberPowerup < 4) {
+				if (((int)(timeLeftEmberPowerup * 5) % 2) != 0) {
 					batch.setColor(1, 1, 1, 0.5f);;
 				}
 			}
@@ -294,7 +294,7 @@ public class WorldRenderer implements Disposable {
 					x, y, 50, 50, 100, 100, 0.35f, -0.35f, 0);
 			batch.setColor(1, 1, 1, 1);
 			Assets.instance.fonts.defaultSmall.draw(batch,
-					"" + (int)timeLeftFeatherPowerup, x + 60, y + 70);
+					"" + (int)timeLeftEmberPowerup, x + 60, y + 70);
 		}
 	}
 

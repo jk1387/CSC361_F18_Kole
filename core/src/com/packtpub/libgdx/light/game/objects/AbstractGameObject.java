@@ -34,7 +34,8 @@ public abstract class AbstractGameObject {
 	public PolygonShape poly;
 	public Fixture fixture;
 	
-	public boolean collected;
+	//public boolean collected;
+	//public boolean emberCollected;
 	
 	/**
 	 * Constructer to initialize the vectors for the object
