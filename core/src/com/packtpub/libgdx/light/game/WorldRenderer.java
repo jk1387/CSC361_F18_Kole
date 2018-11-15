@@ -1,5 +1,10 @@
 package com.packtpub.libgdx.light.game;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,6 +30,8 @@ public class WorldRenderer implements Disposable {
 	private SpriteBatch batch;
 	private WorldController worldController;
 	private Box2DDebugRenderer b2debugRenderer;
+	private Timer timer;
+	//private static int cnt;
 
 	/**
 	 * Initializes the world renderer and creates an instance for the world
@@ -53,6 +60,21 @@ public class WorldRenderer implements Disposable {
 		cameraGUI.setToOrtho(true); // flip y-axis
 		cameraGUI.update(); // makes sure the camera's updated
 		b2debugRenderer = new Box2DDebugRenderer();
+		
+		// Timer for the clock to tick down in-game
+		// still need to link to "time"
+		ActionListener actListner = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				//cnt += 1;
+				worldController.time--;
+				worldController.timeVisual--;
+				//System.out.println("Counter = "+cnt);
+			}
+		};
+				
+		timer = new Timer(800, actListner);
+		timer.start();
 	}
 
 	/**
