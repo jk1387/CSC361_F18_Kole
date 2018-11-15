@@ -111,13 +111,4 @@ public class GameScreen extends AbstractGameScreen {
 		// Only called on Android!
 		paused = false;
 	}
-	
-	/**
-	 * Dispose unused resources.
-	 */
-	@Override
-	public void dispose () {
-		worldRenderer.dispose();
-		Assets.instance.dispose();
-	}
 }

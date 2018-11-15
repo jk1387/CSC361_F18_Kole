@@ -36,6 +36,9 @@ public class Orb extends AbstractGameObject {
 	public Fixture playerPhysicsFixture;
 	public Fixture playerSensorFixture;
 	
+	public boolean hasEmberPowerup;
+	public float timeLeftEmberPowerup;
+	
 	public float movementSpeed = 5.0f; // currently not used
 
 	/**
@@ -80,6 +83,10 @@ public class Orb extends AbstractGameObject {
 		
 		body = box;
 		body.setUserData(this);
+		
+		// Power-ups
+		hasEmberPowerup = false;
+		timeLeftEmberPowerup = 0;
 	};
 
 	/**

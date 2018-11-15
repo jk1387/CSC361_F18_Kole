@@ -41,6 +41,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.packtpub.libgdx.light.screens.MenuScreen;
+import com.packtpub.libgdx.light.game.Assets;
+//import com.packtpub.libgdx.light.util.AudioManager;
 import com.packtpub.libgdx.light.LightMain;
 import com.packtpub.libgdx.light.game.objects.AbstractGameObject;
 import com.packtpub.libgdx.light.game.objects.DarkRock;
@@ -65,6 +67,8 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 
 	public float livesVisual;
 	public float timeVisual;
+	
+	private float timeLeftGameOverDelay;
 	
 	int shardsCollected = 0; // temporary for now to test for sensors touched
 	boolean doneOnce = false;
@@ -101,6 +105,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		world.setContactListener(this);
 		cameraHelper = new CameraHelper();
 		life = Constants.LIVES_START;
+		timeLeftGameOverDelay = 0;
 		initLevel();
 	}
 
@@ -203,8 +208,17 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			System.out.println("DESTROYED");
 		}
 		handleDebugInput(deltaTime);
+		if (isGameOver()/*|| goalReached*/) {
+			timeLeftGameOverDelay -= deltaTime;
+			if (timeLeftGameOverDelay < 0) {
+				backToMenu();
+				return;
+			}
+		} else {
+			playerMovement();
+		}
 		//handleInputGame(deltaTime);
-		playerMovement();
+		//playerMovement();
 		
 		//world.step(Gdx.graphics.getDeltaTime(), 4, 4);
 		//level.orb.body.setAwake(true);
@@ -213,12 +227,37 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		cameraHelper.update(deltaTime);
 		level.update(deltaTime);
 		
+		if (!isGameOver() && isTimeGone()) {
+			//AudioManager.instance.play(Assets.instance.sounds.liveLost);
+			life--;
+			if (isGameOver())
+				timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
+			else
+				initLevel();
+		}
+		
 		level.pillars.updateScrollPosition(cameraHelper.getPosition());
 		
 		// score gain animation goes as scoreVisual catches up to new score
 		if (timeVisual < time)
 			timeVisual = Math.min(time,  timeVisual 
 					+ 250 * deltaTime);
+	}
+	
+	/**
+	 * Boolean checker method for if the game has ended
+	 * @return true if life is 0
+	 */
+	public boolean isGameOver() {
+		return life <= 0;
+	}
+	
+	/**
+	 * Boolean checker method for if the player is out of time
+	 * @return true if time is at 0
+	 */
+	public boolean isTimeGone() {
+		return time <= 0;
 	}
 	
 //	/**

@@ -49,4 +49,13 @@ public class Constants {
 	// Location of the canyonbunny ui json
 	public static final String SKIN_LIGHT_UI =
 			"images/light-ui.json";
+	
+	// Delay after game over
+	public static final float TIME_DELAY_GAME_OVER = 3;
+	
+	// Powerup duration for the feather
+	public static final float ITEM_EMBER_POWERUP_DURATION = 9;
+	
+	// Delay after game finished
+	public static final float TIME_DELAY_GAME_FINISHED = 6;
 }
