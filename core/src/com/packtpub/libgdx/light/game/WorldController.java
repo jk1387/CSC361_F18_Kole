@@ -62,9 +62,9 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	boolean jump = false;
 	float stillTime = 0;
 	long lastGroundTime = 0;
-	AbstractGameObject touchedObject;
-	DarkRock groundedPlatform = null;
-	Shard shardFound = null;
+	AbstractGameObject touchedObject; // object the player contacts
+	DarkRock groundedPlatform = null; // ground detection for jumping
+	//Shard shardFound = null;
 
 	/**
 	 * constructor for world controller
@@ -481,8 +481,11 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			world.dispose();
 	}
 	
-	int randomInt = 0;
+	int randomInt = 0; // temporary for now to test for sensors touched
 	
+	/**
+	 * Activates when the player begins contact with a sensor.
+	 */
 	@Override
 	public void beginContact(Contact contact) {
 		//System.out.println("CONTACT");
@@ -496,6 +499,9 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		}
 	}
 
+	/**
+	 * Resolves the contact after the contact is initiated.
+	 */
 	@Override
 	public void endContact(Contact contact) {
 		if(contact.getFixtureA().getBody().getUserData() == touchedObject) {
@@ -505,12 +511,18 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		}
 	}
 
+	/**
+	 * What to resolve before contact?
+	 */
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * What to resolve after contact?
+	 */
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		// TODO Auto-generated method stub
