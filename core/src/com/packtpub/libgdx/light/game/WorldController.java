@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
@@ -39,6 +40,7 @@ import com.packtpub.libgdx.light.util.CameraHelper;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.packtpub.libgdx.light.screens.MenuScreen;
 import com.packtpub.libgdx.light.LightMain;
 import com.packtpub.libgdx.light.game.objects.AbstractGameObject;
 import com.packtpub.libgdx.light.game.objects.DarkRock;
@@ -55,6 +57,7 @@ import com.packtpub.libgdx.light.util.Constants;
 public class WorldController extends InputAdapter implements Disposable, ContactListener {
 	private static final String TAG = WorldController.class.getName();
 	public CameraHelper cameraHelper;
+	private Game game;
 
 	public Level level;
 	public int life;
@@ -82,9 +85,10 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	/**
 	 * constructor for world controller
 	 * 
-	 * @param game instance of the game/BunnyMain
+	 * @param game instance of the game/LightMain
 	 */
-	public WorldController() {
+	public WorldController(Game game) {
+		this.game = game;
 		init();
 	}
 
@@ -493,9 +497,17 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		}
 		// Back to Menu
 		else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
-			//backToMenu();
+			backToMenu();
 		}
 		return false;
+	}
+	
+	/**
+	 * save a reference to the game instance
+	 */
+	private void backToMenu() {
+		// switch to menu screen
+		game.setScreen(new MenuScreen(game));
 	}
 
 	/**
