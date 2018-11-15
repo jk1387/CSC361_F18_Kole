@@ -32,6 +32,7 @@ public class DesktopLauncher {
 			settings.debug = drawDebugOutline;
 
 			TexturePacker.process(settings, "assets-raw/images", "../core/assets/images", "light.atlas");
+			TexturePacker.process(settings, "assets-raw/images", "../core/assets/images-ui","light-ui.atlas");
 		}
 			
 		LwjglApplicationConfiguration cfg = new
