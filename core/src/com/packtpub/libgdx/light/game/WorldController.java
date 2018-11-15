@@ -26,6 +26,12 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
+
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -33,6 +39,7 @@ import com.packtpub.libgdx.light.util.CameraHelper;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import com.packtpub.libgdx.light.LightMain;
 import com.packtpub.libgdx.light.game.objects.AbstractGameObject;
 import com.packtpub.libgdx.light.game.objects.DarkRock;
 import com.packtpub.libgdx.light.game.objects.Shard;
@@ -48,13 +55,18 @@ import com.packtpub.libgdx.light.util.Constants;
 public class WorldController extends InputAdapter implements Disposable, ContactListener {
 	private static final String TAG = WorldController.class.getName();
 	public CameraHelper cameraHelper;
+	
+	private static int cnt;
 
 	public Level level;
 	public int life;
 	public int time;
 
 	public float livesVisual;
-	public float scoreVisual;
+	public float timeVisual;
+	
+	int shardsCollected = 0; // temporary for now to test for sensors touched
+	boolean doneOnce = false;
 
 	// BOX2D STUFF
 	public static World world; // contains all the box2d bodies and fixtures
@@ -64,7 +76,10 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	long lastGroundTime = 0;
 	AbstractGameObject touchedObject; // object the player contacts
 	DarkRock groundedPlatform = null; // ground detection for jumping
+	AbstractGameObject toDestroy;
 	//Shard shardFound = null;
+	
+	Timer timer;
 
 	/**
 	 * constructor for world controller
@@ -91,9 +106,25 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 * Initialize the level with 100 seconds.
 	 */
 	private void initLevel() {
-		time = 100;
+		time = 30;
+		timeVisual = time;
 		level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.orb);
+		
+		// Timer for the clock to tick down in-game
+		// still need to link to "time"
+		ActionListener actListner = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				cnt += 1;
+				//time--;
+				System.out.println("Counter = "+cnt);
+			}
+		};
+		
+		timer = new Timer(800, actListner);
+		timer.start();
+		
 		initPhysics();
 	}
 
@@ -179,6 +210,11 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	public void update(float deltaTime) {
 		world.step(Gdx.graphics.getDeltaTime(), 4, 4);
+		if(toDestroy != null) { 
+			world.destroyBody(toDestroy.body); 
+			toDestroy = null; 
+			System.out.println("DESTROYED");
+		}
 		handleDebugInput(deltaTime);
 		//handleInputGame(deltaTime);
 		playerMovement();
@@ -189,6 +225,13 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		// level.orb.body = player;
 		cameraHelper.update(deltaTime);
 		level.update(deltaTime);
+		
+		level.pillars.updateScrollPosition(cameraHelper.getPosition());
+		
+		// score gain animation goes as scoreVisual catches up to new score
+		if (timeVisual < time)
+			timeVisual = Math.min(time,  timeVisual 
+					+ 250 * deltaTime);
 	}
 	
 //	/**
@@ -481,8 +524,6 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			world.dispose();
 	}
 	
-	int randomInt = 0; // temporary for now to test for sensors touched
-	
 	/**
 	 * Activates when the player begins contact with a sensor.
 	 */
@@ -491,20 +532,30 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		//System.out.println("CONTACT");
 		if(contact.getFixtureA().getBody().getUserData() == level.orb && contact.getFixtureB().getBody().getUserData().getClass() == Shard.class 
 				&& contact.getFixtureB().isSensor()) { // player and is a sensor
-			touchedObject = (AbstractGameObject) contact.getFixtureB().getBody().getUserData();
-			System.out.println("Touched a Shard\n-------" + randomInt++);
+			if(!doneOnce) {
+				touchedObject = (AbstractGameObject) contact.getFixtureB().getBody().getUserData();
+				System.out.println("Touched a Shard\n-------" + shardsCollected++);
+				touchedObject.collected = true;
+				toDestroy = touchedObject;
+				doneOnce = true;
+				
+				//AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
+				time += ((Shard)touchedObject).getScore();
+				Gdx.app.log(TAG, "Shard collected");
+			}
 		} else if(contact.getFixtureB().getBody().getUserData() == level.orb && contact.getFixtureA().isSensor()) {
 			touchedObject = (AbstractGameObject) contact.getFixtureA().getBody().getUserData();
 			System.out.println("B touched A");
 		}
 	}
-
+	
 	/**
 	 * Resolves the contact after the contact is initiated.
 	 */
 	@Override
 	public void endContact(Contact contact) {
 		if(contact.getFixtureA().getBody().getUserData() == touchedObject) {
+			doneOnce = false;
 			touchedObject = null;
 		} else if(contact.getFixtureB().getBody().getUserData() == touchedObject) {
 			touchedObject = null;
@@ -517,7 +568,6 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	@Override
 	public void preSolve(Contact contact, Manifold oldManifold) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	/**
@@ -526,6 +576,5 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		// TODO Auto-generated method stub
-		
 	}
 }

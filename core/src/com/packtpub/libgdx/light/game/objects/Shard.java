@@ -14,9 +14,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
  */
 public class Shard extends AbstractGameObject {
 	private TextureRegion regShard;
-	public boolean collected;
+	//public boolean collected;
 	
-	public Fixture fixture;
+	//public Fixture fixture;
 	
 	/**
 	 * Constructor to initialize the shard.
@@ -62,6 +62,6 @@ public class Shard extends AbstractGameObject {
      * @return the score from collecting a shard.
      */
     public int getScore(){
-    	return 100;
+    	return 15;
     }
 }

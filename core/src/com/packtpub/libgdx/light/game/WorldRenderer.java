@@ -107,27 +107,29 @@ public class WorldRenderer implements Disposable {
 	 * Renders the GUI elements, specifically the overlaying score (with font).
 	 * @param batch sprite batch
 	 */
-	private void renderGuiTime (SpriteBatch batch) {
+	public void renderGuiTime (SpriteBatch batch) {
 		float x = -15;
 		float y = -15;
 		
-//		float offsetX = 50;
-//		float offsetY = 50;
-//		
-//		if (worldController.scoreVisual < worldController.time) {
-//			long shakeAlpha = System.currentTimeMillis() % 360;
-//			float shakeDist = 1.5f;
-//			offsetX += MathUtils.sinDeg(shakeAlpha * 2.2f) * shakeDist;
-//			offsetY += MathUtils.sinDeg(shakeAlpha * 2.9f) * shakeDist;
-//		}
+		float offsetX = 50;
+		float offsetY = 50;
+		
+		if (worldController.timeVisual < worldController.time) {
+			long shakeAlpha = System.currentTimeMillis() % 360;
+			float shakeDist = 1.5f;
+			offsetX += MathUtils.sinDeg(shakeAlpha * 2.2f) * shakeDist;
+			offsetY += MathUtils.sinDeg(shakeAlpha * 2.9f) * shakeDist;
+		}
 //		// draw the gold coin in the top left corner, by the score
 //		batch.draw(Assets.instance.shard.shard, x, y, offsetX,
 //				offsetY, 100, 100, 0.35f, -0.35f, 0);
-		batch.draw(Assets.instance.shard.shard, x, y, 50,
-				50, 100, 100, 0.35f, -0.35f, 0);
+		batch.draw(Assets.instance.shard.shard, x, y, offsetX,
+				offsetY, 100, 100, 0.35f, -0.35f, 0);
+//		batch.draw(Assets.instance.shard.shard, x, y, 50,
+//				50, 100, 100, 0.35f, -0.35f, 0);
 		// draws the score in the stored font
 		Assets.instance.fonts.defaultBig.draw(batch,
-				"" + (int)worldController.scoreVisual, // cast to int to cut off fraction
+				"" + (int)worldController.timeVisual, // cast to int to cut off fraction
 				x + 75, y + 37);
 	}
 	
