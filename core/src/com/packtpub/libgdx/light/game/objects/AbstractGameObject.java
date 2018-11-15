@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.packtpub.libgdx.light.game.WorldController;
@@ -31,6 +32,9 @@ public abstract class AbstractGameObject {
 	public Body body;
 	public BodyDef bodyDef;
 	public PolygonShape poly;
+	public Fixture fixture;
+	
+	public boolean collected;
 	
 	/**
 	 * Constructer to initialize the vectors for the object
