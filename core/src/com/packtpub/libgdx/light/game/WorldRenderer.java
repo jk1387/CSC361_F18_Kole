@@ -19,10 +19,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  * @author Jacob Kole
  */
 public class WorldRenderer implements Disposable {
+	private static final boolean DEBUT_DRAW_BOX2D_WORLD = true;
 	private OrthographicCamera camera;
 	private OrthographicCamera cameraGUI;
 	private SpriteBatch batch;
 	private WorldController worldController;
+	private Box2DDebugRenderer b2debugRenderer;
 
 	/**
 	 * Initializes the world renderer and creates an instance for the world
@@ -50,6 +52,7 @@ public class WorldRenderer implements Disposable {
 		cameraGUI.position.set(0, 0, 0); // set origin position for GUI camera
 		cameraGUI.setToOrtho(true); // flip y-axis
 		cameraGUI.update(); // makes sure the camera's updated
+		b2debugRenderer = new Box2DDebugRenderer();
 	}
 
 	/**
@@ -71,6 +74,10 @@ public class WorldRenderer implements Disposable {
 		batch.begin();
 		worldController.level.render(batch);
 		batch.end();
+		
+		if (DEBUT_DRAW_BOX2D_WORLD) {
+			b2debugRenderer.render(WorldController.world, camera.combined);
+		}
 	}
 
 	/**
