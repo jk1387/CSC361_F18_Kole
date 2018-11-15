@@ -55,8 +55,6 @@ import com.packtpub.libgdx.light.util.Constants;
 public class WorldController extends InputAdapter implements Disposable, ContactListener {
 	private static final String TAG = WorldController.class.getName();
 	public CameraHelper cameraHelper;
-	
-	private static int cnt;
 
 	public Level level;
 	public int life;
@@ -110,21 +108,6 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		timeVisual = time;
 		level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.orb);
-		
-		// Timer for the clock to tick down in-game
-		// still need to link to "time"
-		ActionListener actListner = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				cnt += 1;
-				//time--;
-				System.out.println("Counter = "+cnt);
-			}
-		};
-		
-		timer = new Timer(800, actListner);
-		timer.start();
-		
 		initPhysics();
 	}
 
