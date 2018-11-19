@@ -27,20 +27,25 @@ import com.badlogic.gdx.graphics.g2d.Animation;
  */
 public class Orb extends AbstractGameObject {
 	public static final String TAG = Orb.class.getName();
-	
-	public enum VIEW_DIRECTION { LEFT, RIGHT }
+
+	public enum VIEW_DIRECTION {
+		LEFT, RIGHT
+	}
 
 	private TextureRegion regOrb;
 	public VIEW_DIRECTION viewDirection;
-	
+
 	public Fixture playerPhysicsFixture;
 	public Fixture playerSensorFixture;
-	
+
+	public boolean hasEmberPowerup;
+	public float timeLeftEmberPowerup;
+
 	public float movementSpeed = 5.0f; // currently not used
 
 	/**
-	 * Orb is the player. It has dimensions and a box2d body,
-	 * along with a circular shape.
+	 * Orb is the player. It has dimensions and a box2d body, along with a circular
+	 * shape.
 	 */
 	public Orb() {
 		super();
@@ -51,17 +56,17 @@ public class Orb extends AbstractGameObject {
 	 * Initialize all the variables for the player.
 	 */
 	public void init() {
-		//body.getWorld().destroyBody(body);
+		// body.getWorld().destroyBody(body);
 		// chapter 6
 		dimension.set(1, 1);
 		regOrb = Assets.instance.orb.orb;
 		// Center image on game object
 		origin.set(dimension.x / 2, dimension.y / 2);
 		bounds.set(0, 0, dimension.x, dimension.y);
-		
+
 		bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
-		//bodyDef.type = BodyType.KinematicBody;
+		// bodyDef.type = BodyType.KinematicBody;
 		Body box = WorldController.world.createBody(bodyDef);
 
 //		PolygonShape poly = new PolygonShape();
@@ -77,18 +82,68 @@ public class Orb extends AbstractGameObject {
 		playerPhysicsFixture = box.createFixture(circle, 0);
 		playerSensorFixture = box.createFixture(circle, 0);
 		circle.dispose();
-		
+
 		body = box;
 		body.setUserData(this);
+
+		// Power-ups
+		hasEmberPowerup = false;
+		timeLeftEmberPowerup = 0;
 	};
 
 	/**
-	 * Calls the update for player. This updates the
-	 * box2d's body position.
+	 * Sets the orb to have the Ember powerup.
+	 * 
+	 * @param pickedUp Ember has been picked up
+	 */
+	public void setEmberPowerup(boolean pickedUp) {
+
+		// chapter 6
+		hasEmberPowerup = pickedUp;
+		if (pickedUp) {
+			timeLeftEmberPowerup += Constants.ITEM_EMBER_POWERUP_DURATION;
+		}
+	};
+
+	/**
+	 * Orb has the Ember powerup.
+	 * 
+	 * @return true if has powerup
+	 */
+	public boolean hasEmberPowerup() {
+		// chapter 6
+		return hasEmberPowerup && timeLeftEmberPowerup > 0;
+	};
+
+	/**
+	 * Calls the update for player. This updates the box2d's body position.
 	 */
 	@Override
-	public void update(float deltaTime) {		
+	public void update(float deltaTime) {
 		super.update(deltaTime);
+
+		if (timeLeftEmberPowerup > 0) {
+			timeLeftEmberPowerup -= deltaTime;
+
+			if (timeLeftEmberPowerup < 0) {
+				//if (animation == animCopterTransformBack) {
+					// Restart "Transform" animation if another feather power-up
+					// was picked up during "TransformBack" animation. Otherwise,
+					// power-up is still active.
+					//setAnimation(animCopterTransform);
+				//}
+				// disable power-up
+				timeLeftEmberPowerup = 0;
+				setEmberPowerup(false);
+				//setAnimation(animCopterTransformBack);
+			}
+		}
+		//dustParticles.update(deltaTime);
+
+		// Change animation state according to feather power-up
+		if (hasEmberPowerup) {
+			
+		}
 	}
 
 	/**
@@ -98,10 +153,14 @@ public class Orb extends AbstractGameObject {
 	public void render(SpriteBatch batch) {
 		TextureRegion reg = null;
 		reg = regOrb;
+		
+		if(hasEmberPowerup) {
+			batch.setColor(1.0f, 0.5f, 0.5f, 1.0f);
+		}
 
-		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y, dimension.x,
-				dimension.y, scale.x, scale.y, rotation, reg.getRegionX(), reg.getRegionY(),
-				reg.getRegionWidth(), reg.getRegionHeight(), viewDirection == VIEW_DIRECTION.LEFT, false);
+		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y, dimension.x, dimension.y, scale.x,
+				scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(), reg.getRegionHeight(),
+				viewDirection == VIEW_DIRECTION.LEFT, false);
 		// Reset color to white
 		batch.setColor(1, 1, 1, 1);
 	}

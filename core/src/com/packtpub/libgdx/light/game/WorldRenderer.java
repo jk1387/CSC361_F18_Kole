@@ -1,5 +1,10 @@
 package com.packtpub.libgdx.light.game;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.Timer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +15,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.packtpub.libgdx.light.game.Assets;
 //import com.packtpub.libgdx.light.util.GamePreferences;
 import com.packtpub.libgdx.light.util.Constants;
+import com.packtpub.libgdx.light.util.GamePreferences;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -25,6 +31,8 @@ public class WorldRenderer implements Disposable {
 	private SpriteBatch batch;
 	private WorldController worldController;
 	private Box2DDebugRenderer b2debugRenderer;
+	private Timer timer;
+	//private static int cnt;
 
 	/**
 	 * Initializes the world renderer and creates an instance for the world
@@ -53,6 +61,23 @@ public class WorldRenderer implements Disposable {
 		cameraGUI.setToOrtho(true); // flip y-axis
 		cameraGUI.update(); // makes sure the camera's updated
 		b2debugRenderer = new Box2DDebugRenderer();
+		
+		// Timer for the clock to tick down in-game
+		// still need to link to "time"
+		ActionListener actListner = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				//cnt += 1;
+				if(worldController.time > 0 && worldController.timeVisual > 0) {
+					worldController.time--;
+					worldController.timeVisual--;
+					//System.out.println("Counter = "+cnt);
+				}
+			}
+		};
+				
+		timer = new Timer(800, actListner);
+		timer.start();
 	}
 
 	/**
@@ -92,14 +117,15 @@ public class WorldRenderer implements Disposable {
 		renderGuiTime(batch);
 		// draw collected feather icon
 		// (anchored to top left edge)
-		//renderGuiEmberPowerup(batch);
+		renderGuiEmberPowerup(batch);
 		// draw extra lives icon + text
 		// (anchored to top right edge)
 		renderGuiLife(batch);
 		// draw FPS text
 		// draw FPS text (anchored to bottom right edge)
-		//if (GamePreferences.instance.showFpsCounter)
+		if (GamePreferences.instance.showFpsCounter)
 			renderGuiFpsCounter(batch);
+		renderGuiGameOverMessage(batch);
 		batch.end();
 	}
 	
@@ -107,28 +133,34 @@ public class WorldRenderer implements Disposable {
 	 * Renders the GUI elements, specifically the overlaying score (with font).
 	 * @param batch sprite batch
 	 */
-	private void renderGuiTime (SpriteBatch batch) {
+	public void renderGuiTime (SpriteBatch batch) {
 		float x = -15;
 		float y = -15;
 		
-//		float offsetX = 50;
-//		float offsetY = 50;
-//		
-//		if (worldController.scoreVisual < worldController.time) {
-//			long shakeAlpha = System.currentTimeMillis() % 360;
-//			float shakeDist = 1.5f;
-//			offsetX += MathUtils.sinDeg(shakeAlpha * 2.2f) * shakeDist;
-//			offsetY += MathUtils.sinDeg(shakeAlpha * 2.9f) * shakeDist;
-//		}
+		float offsetX = 50;
+		float offsetY = 50;
+		
+		if (worldController.timeVisual < worldController.time) {
+			long shakeAlpha = System.currentTimeMillis() % 360;
+			float shakeDist = 1.5f;
+			offsetX += MathUtils.sinDeg(shakeAlpha * 2.2f) * shakeDist;
+			offsetY += MathUtils.sinDeg(shakeAlpha * 2.9f) * shakeDist;
+		}
 //		// draw the gold coin in the top left corner, by the score
 //		batch.draw(Assets.instance.shard.shard, x, y, offsetX,
 //				offsetY, 100, 100, 0.35f, -0.35f, 0);
-		batch.draw(Assets.instance.shard.shard, x, y, 50,
-				50, 100, 100, 0.35f, -0.35f, 0);
+		batch.draw(Assets.instance.shard.shard, x, y, offsetX,
+				offsetY, 100, 100, 0.35f, -0.35f, 0);
+//		batch.draw(Assets.instance.shard.shard, x, y, 50,
+//				50, 100, 100, 0.35f, -0.35f, 0);
 		// draws the score in the stored font
 		Assets.instance.fonts.defaultBig.draw(batch,
-				"" + (int)worldController.scoreVisual, // cast to int to cut off fraction
+				"" + (int)worldController.timeVisual, // cast to int to cut off fraction
 				x + 75, y + 37);
+		
+		Assets.instance.fonts.defaultBig.draw(batch,
+				"" + (int)worldController.shardsCollected + " / " + (int)worldController.totalShards, // cast to int to cut off fraction
+				x + 165, y + 37);
 	}
 	
 	/**
@@ -211,6 +243,63 @@ public class WorldRenderer implements Disposable {
 		// draw the FPS display
 		fpsFont.draw(batch, "FPS: " + fps, x, y);
 		fpsFont.setColor(1, 1, 1, 1); // white
+	}
+	
+	/**
+	 * Renders the game over message.
+	 * @param batch sprite batch
+	 */
+	private void renderGuiGameOverMessage (SpriteBatch batch) {
+		// cuts the camera GUI's dimensions in half to
+		// calculate the center of the camera's viewport
+		float x = cameraGUI.viewportWidth / 2;
+		float y = cameraGUI.viewportHeight / 2;
+		
+		// checks if there is a game over
+		if (worldController.isGameOver()) {
+			// grabs the game over message font and sets its color
+			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig;
+			fontGameOver.setColor(1, 0.75f, 0.25f, 1);
+			
+			// draws the message
+			// HAlignment.CENTER: means to draw the font horizontally centered
+			// to the given position
+			fontGameOver.draw(batch, "GAME OVER", x, y, 1,
+					Align.center, false);
+			fontGameOver.setColor(1, 1, 1, 1);
+		}
+	}
+	
+	/**
+	 * Checks whether there is still time left for the feather
+	 * power-up effect to end. The icon is drawn in the top-left
+	 * corner under the gold coin icon. The small number next to it
+	 * displays the rounded time still left until the effect vanishes.
+	 * It'll fade back and forth when there's less than four seconds left.
+	 * @param batch sprite batch
+	 */
+	private void renderGuiEmberPowerup (SpriteBatch batch) {
+		// where to place the feather power-up display image
+		float x = -15;
+		float y = 30;
+		// checks how much time is left for the power-up
+		float timeLeftEmberPowerup = 
+				worldController.level.orb.timeLeftEmberPowerup;
+		if (timeLeftEmberPowerup > 0) {
+			// Start icon fade in/out if the left power-up time
+			// is less than 4 seconds. The fade interval is set
+			// to 5 changes per second.
+			if (timeLeftEmberPowerup < 4) {
+				if (((int)(timeLeftEmberPowerup * 5) % 2) != 0) {
+					batch.setColor(1, 1, 1, 0.5f);;
+				}
+			}
+			batch.draw(Assets.instance.ember.ember,
+					x, y, 50, 50, 100, 100, 0.35f, -0.35f, 0);
+			batch.setColor(1, 1, 1, 1);
+			Assets.instance.fonts.defaultSmall.draw(batch,
+					"" + (int)timeLeftEmberPowerup, x + 60, y + 70);
+		}
 	}
 
 	/**

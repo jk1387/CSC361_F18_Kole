@@ -33,4 +33,29 @@ public class Constants {
 	
 	// Preferences file
 	public static final String PREFERENCES = "settings.prefs";
+	
+	// Location of the ui atlas
+	public static final String TEXTURE_ATLAS_UI =
+			"images/light-ui.atlas"; // should this be .pack?
+	
+	// Location of the uiskin atlas
+	public static final String TEXTURE_ATLAS_LIBGDX_UI =
+			"images/uiskin.atlas";
+	
+	// Location of description file for skins
+	public static final String SKIN_LIBGDX_UI =
+			"images/uiskin.json";
+	
+	// Location of the canyonbunny ui json
+	public static final String SKIN_LIGHT_UI =
+			"images/light-ui.json";
+	
+	// Delay after game over
+	public static final float TIME_DELAY_GAME_OVER = 3;
+	
+	// Powerup duration for the feather
+	public static final float ITEM_EMBER_POWERUP_DURATION = 9;
+	
+	// Delay after game finished
+	public static final float TIME_DELAY_GAME_FINISHED = 6;
 }
