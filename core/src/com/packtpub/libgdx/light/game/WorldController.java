@@ -71,7 +71,9 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 
 	private float timeLeftGameOverDelay;
 
-	int shardsCollected = 0; // temporary for now to test for sensors touched
+	public int shardsCollected = 0; // temporary for now to test for sensors touched
+	public int totalShards = 0;
+	boolean won = false;
 	boolean doneOnce = false;
 
 	// BOX2D STUFF
@@ -119,6 +121,8 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.orb);
 		initPhysics();
+		totalShards = level.shards.size;
+		//System.out.println("Total Shards: " + totalShards);
 	}
 
 	/**
@@ -232,6 +236,12 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			System.out.println("DESTROYED");
 		}
 		handleDebugInput(deltaTime);
+		
+		if (shardsCollected >= totalShards && !won) {
+			won = true;
+			System.out.println("You've collected all the shards!");
+		}
+		
 		if (isGameOver()/* || goalReached */) {
 			timeLeftGameOverDelay -= deltaTime;
 			if (timeLeftGameOverDelay < 0) {
