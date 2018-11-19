@@ -157,6 +157,10 @@ public class WorldRenderer implements Disposable {
 		Assets.instance.fonts.defaultBig.draw(batch,
 				"" + (int)worldController.timeVisual, // cast to int to cut off fraction
 				x + 75, y + 37);
+		
+		Assets.instance.fonts.defaultBig.draw(batch,
+				"" + (int)worldController.shardsCollected + " / " + (int)worldController.totalShards, // cast to int to cut off fraction
+				x + 165, y + 37);
 	}
 	
 	/**
