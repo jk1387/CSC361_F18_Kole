@@ -14,26 +14,29 @@ public enum CharacterSkin {
 	private String name;
 	private Color color = new Color();
 
-	/*
-	 * constructor
+	/**
+	 * Constructor for the character skin
+	 * @param name name of the character skin
+	 * @param r red
+	 * @param g green
+	 * @param b blue
 	 */
 	private CharacterSkin(String name, float r, float g, float b) {
 		this.name = name;
 		color.set(r, g, b, 1.0f);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Enum#toString()
-	 * getter for the name 
+	/**
+	 * Getter for the name 
 	 */
 	@Override
 	public String toString() {
 		return name;
 	}
 
-	/*
-	 * getter for color
+	/**
+	 * Getter for color
+	 * @return the color
 	 */
 	public Color getColor() {
 		return color;

@@ -240,6 +240,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (shardsCollected >= totalShards && !won) {
 			won = true;
 			System.out.println("You've collected all the shards!");
+			System.out.println("Your score was " + time + "!");
 		}
 		
 		if (isGameOver()/* || goalReached */) {

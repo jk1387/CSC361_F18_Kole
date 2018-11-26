@@ -62,6 +62,6 @@ public class Ember extends AbstractGameObject {
 	 * @return
 	 */
 	public int getScore() {
-		return 25;
+		return 0;
 	}
 }

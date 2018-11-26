@@ -451,8 +451,9 @@ public class MenuScreen extends AbstractGameScreen {
 		showOptionsWindow(true, true);
 	}
 	
-	/*
-	 * method to show the menu buttons
+	/**
+	 * Method to show the menu buttons
+	 * @param visible
 	 */
 	private void showMenuButtons (boolean visible) {
 		float moveDuration = 1.0f;
@@ -477,8 +478,10 @@ public class MenuScreen extends AbstractGameScreen {
 		stage.addAction(seq);
 		}
 	
-	/*
-	 * method for showing the options window 
+	/**
+	 * Method for showing the options window
+	 * @param visible
+	 * @param animated
 	 */
 	private void showOptionsWindow (boolean visible,boolean animated) {
 			float alphaTo = visible ? 0.8f : 0.0f;
