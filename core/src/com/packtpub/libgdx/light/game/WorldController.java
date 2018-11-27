@@ -122,7 +122,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		cameraHelper.setTarget(level.orb);
 		initPhysics();
 		totalShards = level.shards.size;
-		//System.out.println("Total Shards: " + totalShards);
+		// System.out.println("Total Shards: " + totalShards);
 	}
 
 	/**
@@ -236,7 +236,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			System.out.println("DESTROYED");
 		}
 		handleDebugInput(deltaTime);
-		
+
 		if (shardsCollected >= totalShards && !won) {
 			won = true;
 //			int[] scores = Assets.getHighScore();
@@ -251,7 +251,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			System.out.println("Your score was " + time + "!");
 //			System.out.println("New High Score: " + scores[scores.length - 1]);
 		}
-		
+
 		if (isGameOver()/* || goalReached */) {
 			timeLeftGameOverDelay -= deltaTime;
 			if (timeLeftGameOverDelay < 0) {
@@ -370,7 +370,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)
 				|| !Gdx.input.isKeyPressed(Keys.W) && !Gdx.input.isKeyPressed(Keys.S)) {
 			stillTime += Gdx.graphics.getDeltaTime();
-			if(!embered) {
+			if (!embered) {
 				level.orb.body.setLinearVelocity(vel.x * 0.9f, vel.y);
 			} else {
 				level.orb.body.setLinearVelocity(vel.x * 0.9f, vel.y * 0.9f);
@@ -406,7 +406,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (Gdx.input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
 			level.orb.body.applyLinearImpulse(2f, 0, pos.x, pos.y, true);
 		}
-		
+
 		// apply down impulse, but only if max velocity is not reached yet
 		if (embered && Gdx.input.isKeyPressed(Keys.S) && vel.y > -MAX_VELOCITY) {
 			level.orb.body.applyLinearImpulse(0, -2f, pos.x, pos.y, true);
@@ -416,7 +416,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (embered && Gdx.input.isKeyPressed(Keys.W) && vel.y < MAX_VELOCITY) {
 			level.orb.body.applyLinearImpulse(0, 2f, pos.x, pos.y, true);
 		}
-		
+
 		if (embered) {
 			level.orb.body.setGravityScale(0);
 		} else {
@@ -612,16 +612,32 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		}
 		// Set new High Score
 		else if (keycode == Keys.O) {
-			System.out.println("Won!");
+			System.out.println("Highest: " + Assets.getHighScore()[Assets.getHighScore().length - 1]);
+			
+			int i = 1;
+			if(Assets.getHighScore().length >= 3) {
+				i = Assets.getHighScore().length - 3;
+			}
+			
 			int[] scores = Assets.getHighScore();
 			System.out.print("Previous High Scores: ");
-			for(int i = 0; i < scores.length; i++) {
+			for (; i < scores.length; i++) {
 				System.out.print(scores[i] + " ");
 			}
 			System.out.println();
-			Assets.setHighScore(time);
-			scores = Assets.getHighScore();
-			System.out.println("New High Score: " + scores[scores.length - 1]);
+			
+			if (time > Assets.getHighScore()[Assets.getHighScore().length - 1]) {
+				System.out.println("Won!");
+//				int[] scores = Assets.getHighScore();
+//				System.out.print("Previous High Scores: ");
+//				for (int i = 1; i < scores.length; i++) {
+//					System.out.print(scores[i] + " ");
+//				}
+//				System.out.println();
+				Assets.setHighScore(time);
+				scores = Assets.getHighScore();
+				System.out.println("New High Score: " + scores[scores.length - 1]);
+			}
 		}
 		// Reset High Score
 		else if (keycode == Keys.P) {
@@ -653,14 +669,14 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	@Override
 	public void beginContact(Contact contact) {
-		//System.out.println("CONTACT");
+		// System.out.println("CONTACT");
 		if (contact.getFixtureA().getBody().getUserData() == level.orb
 				&& contact.getFixtureB().getBody().getUserData().getClass() == Shard.class
 				&& contact.getFixtureB().isSensor()) { // player and is a sensor
 			if (!doneOnce) {
 				touchedObject = (AbstractGameObject) contact.getFixtureB().getBody().getUserData();
 				System.out.println("Touched a Shard\n-------" + shardsCollected++);
-				((Shard)touchedObject).collected = true;
+				((Shard) touchedObject).collected = true;
 				toDestroy = touchedObject;
 				doneOnce = true;
 
@@ -677,7 +693,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			if (!doneOnce) {
 				touchedObject = (AbstractGameObject) contact.getFixtureB().getBody().getUserData();
 				System.out.println("Touched an Ember\n-------");
-				((Ember)touchedObject).emberCollected = true;
+				((Ember) touchedObject).emberCollected = true;
 				toDestroy = touchedObject;
 				doneOnce = true;
 
