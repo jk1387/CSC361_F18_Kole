@@ -27,13 +27,15 @@ public class GamePreferences {
 	public float volMusic;
 	public int charSkin;
 	public boolean showFpsCounter;
+	public String highScore;
 	
 	// local variable for preferences
 	private Preferences prefs;
 	
 	// singleton: prevent instantiation from other classes
 	private GamePreferences () {
-		prefs = Gdx.app.getPreferences(Constants.PREFERENCES);
+		//prefs = Gdx.app.getPreferences(Constants.PREFERENCES);
+		prefs = Constants.prefs;
 	}
 	
 	/**
@@ -60,6 +62,10 @@ public class GamePreferences {
 		
 		// gets the FPS boolean value
 		showFpsCounter = prefs.getBoolean("showFpsCounter", false);
+		
+		// gets the previous high score
+		highScore = prefs.getString("highScore");
+		System.out.println("GamePreferences LOAD: " + highScore);
 	}
 	
 	/**
@@ -76,6 +82,8 @@ public class GamePreferences {
 		prefs.putFloat("volMusic", volMusic);
 		prefs.putInteger("charSkin",  charSkin);
 		prefs.putBoolean("showFpsCounter",  showFpsCounter);
+		//prefs.putString("highScore", highScore);
+		//System.out.println("GamePreferences SAVE: " + highScore);
 		
 		// write the changed values into the preferences file
 		prefs.flush();
