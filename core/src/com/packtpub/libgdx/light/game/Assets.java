@@ -31,6 +31,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetEmber ember;
 	public AssetLevelDecoration levelDecoration;
 	public AssetFonts fonts;
+	
+	private static String allScore = "";
 
 
 	/**
@@ -44,6 +46,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	 */
 	public void init(AssetManager assetManager) 
 	{
+		//Constants.prefs.putInteger("highScore", 0);
 		this.assetManager = assetManager;
 
 		//set asset manager error handler
@@ -164,6 +167,47 @@ public class Assets implements Disposable, AssetErrorListener {
 			defaultBig.getRegion().getTexture().setFilter(
 			TextureFilter.Linear, TextureFilter.Linear);
 		}
+	}
+	
+	/**
+	 * Adds high scores to the list.
+	 * @param val the value of the new score
+	 */
+	public static void setHighScore(int val) {
+		allScore = allScore + " " + val;
+		
+		Constants.prefs.putString("highScore", allScore);
+		//Constants.prefs.putInteger("highScore", val);
+		Constants.prefs.flush();
+	}
+	
+	/**
+	 * Gets the entire high score list
+	 * in the form of an array.
+	 * @return scores the high score list
+	 */
+	public static int[] getHighScore() {
+		allScore = Constants.prefs.getString("highScore");
+		
+		String[] strings = allScore.split(" ");
+		int[] scores = new int[strings.length];
+		for(int i = 0; i < scores.length; i++) {
+			scores[i] = Integer.parseInt(strings[i]);
+		}
+		
+		return scores;
+		
+		//return Constants.prefs.getInteger("highScore");
+	}
+	
+	/**
+	 * Resets the high score list.
+	 */
+	public static void resetHighScore() {
+		allScore = "";
+		Constants.prefs.putInteger("highScore", 0);
+//		Constants.prefs.putString("highScore", allScore);
+		Constants.prefs.flush();
 	}
 
 	/**

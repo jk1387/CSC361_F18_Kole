@@ -239,8 +239,17 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		
 		if (shardsCollected >= totalShards && !won) {
 			won = true;
+//			int[] scores = Assets.getHighScore();
+//			System.out.print("Previous High Scores: ");
+//			for(int i = 0; i < scores.length; i++) {
+//				System.out.print(scores[i] + " ");
+//			}
+//			System.out.println();
+//			Assets.setHighScore(time);
+//			scores = Assets.getHighScore();
 			System.out.println("You've collected all the shards!");
 			System.out.println("Your score was " + time + "!");
+//			System.out.println("New High Score: " + scores[scores.length - 1]);
 		}
 		
 		if (isGameOver()/* || goalReached */) {
@@ -600,6 +609,24 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		// Back to Menu
 		else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
 			backToMenu();
+		}
+		// Set new High Score
+		else if (keycode == Keys.O) {
+			System.out.println("Won!");
+			int[] scores = Assets.getHighScore();
+			System.out.print("Previous High Scores: ");
+			for(int i = 0; i < scores.length; i++) {
+				System.out.print(scores[i] + " ");
+			}
+			System.out.println();
+			Assets.setHighScore(time);
+			scores = Assets.getHighScore();
+			System.out.println("New High Score: " + scores[scores.length - 1]);
+		}
+		// Reset High Score
+		else if (keycode == Keys.P) {
+			System.out.println("Reset!");
+			Assets.resetHighScore();
 		}
 		return false;
 	}

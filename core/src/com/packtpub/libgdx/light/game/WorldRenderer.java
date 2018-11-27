@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  * @author Jacob Kole
  */
 public class WorldRenderer implements Disposable {
-	private static final boolean DEBUT_DRAW_BOX2D_WORLD = true;
+	private static final boolean DEBUT_DRAW_BOX2D_WORLD = false;
 	private OrthographicCamera camera;
 	private OrthographicCamera cameraGUI;
 	private SpriteBatch batch;
