@@ -35,6 +35,7 @@ import javax.swing.Timer;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
 import com.packtpub.libgdx.light.util.CameraHelper;
 import com.badlogic.gdx.utils.Disposable;
@@ -57,7 +58,7 @@ import com.packtpub.libgdx.light.util.Constants;
  * 
  * @author Jacob Kole
  */
-public class WorldController extends InputAdapter implements Disposable, ContactListener {
+public class WorldController extends InputAdapter implements Disposable, ContactListener, TextInputListener {
 	private static final String TAG = WorldController.class.getName();
 	public CameraHelper cameraHelper;
 	private Game game;
@@ -613,19 +614,20 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		// Set new High Score
 		else if (keycode == Keys.O) {
 			System.out.println("Highest: " + Assets.getHighScore()[Assets.getHighScore().length - 1]);
-			
+
 			int i = 1;
-			if(Assets.getHighScore().length >= 3) {
+			if (Assets.getHighScore().length > 3) {
 				i = Assets.getHighScore().length - 3;
 			}
-			
+
 			int[] scores = Assets.getHighScore();
-			System.out.print("Previous High Scores: ");
+			String[] names = Assets.getScoreNames();
+			System.out.println("Previous High Scores: ");
 			for (; i < scores.length; i++) {
-				System.out.print(scores[i] + " ");
+				System.out.println("\t" + names[i] + " - " + scores[i]);
 			}
-			System.out.println();
-			
+			//System.out.println();
+
 			if (time > Assets.getHighScore()[Assets.getHighScore().length - 1]) {
 				System.out.println("Won!");
 //				int[] scores = Assets.getHighScore();
@@ -634,7 +636,8 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 //					System.out.print(scores[i] + " ");
 //				}
 //				System.out.println();
-				Assets.setHighScore(time);
+				Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
+				//Assets.setHighScore(time, "Test Name");
 				scores = Assets.getHighScore();
 				System.out.println("New High Score: " + scores[scores.length - 1]);
 			}
@@ -643,6 +646,12 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		else if (keycode == Keys.P) {
 			System.out.println("Reset!");
 			Assets.resetHighScore();
+		}
+		// Pull up dialogue box
+		else if (keycode == Keys.I) {
+			//TextInputListener listener = new TextInputListener();
+			Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
+			//ApplicationListener.render();
 		}
 		return false;
 	}
@@ -733,5 +742,23 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * Grabs the input from a text box that takes in user input.
+	 */
+	@Override
+	public void input(String text) {
+		// TODO Auto-generated method stub
+		Assets.setHighScore(time, text);
+	}
+
+	/**
+	 * Code for when canceled is clicked.
+	 */
+	@Override
+	public void canceled() {
+		// TODO Auto-generated method stub
+		
 	}
 }

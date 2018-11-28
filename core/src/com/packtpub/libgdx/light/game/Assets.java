@@ -33,6 +33,7 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetFonts fonts;
 	
 	private static String allScore = "";
+	private static String allNames = "";
 
 
 	/**
@@ -173,10 +174,12 @@ public class Assets implements Disposable, AssetErrorListener {
 	 * Adds high scores to the list.
 	 * @param val the value of the new score
 	 */
-	public static void setHighScore(int val) {
+	public static void setHighScore(int val, String name) {
 		allScore = allScore + " " + val;
+		allNames = allNames + "}" + name;
 		
 		Constants.prefs.putString("highScore", allScore);
+		Constants.prefs.putString("allNames", allNames);
 		//Constants.prefs.putInteger("highScore", val);
 		Constants.prefs.flush();
 	}
@@ -201,11 +204,23 @@ public class Assets implements Disposable, AssetErrorListener {
 	}
 	
 	/**
+	 * Gets the entire list of names for the
+	 * high score list.
+	 * @return the string array of names
+	 */
+	public static String[] getScoreNames() {
+		allNames = Constants.prefs.getString("allNames");
+		return allNames.split("}");
+	}
+	
+	/**
 	 * Resets the high score list.
 	 */
 	public static void resetHighScore() {
 		allScore = "";
+		allNames = "";
 		Constants.prefs.putInteger("highScore", 0);
+		Constants.prefs.putInteger("allNames", 0);
 //		Constants.prefs.putString("highScore", allScore);
 		Constants.prefs.flush();
 	}
