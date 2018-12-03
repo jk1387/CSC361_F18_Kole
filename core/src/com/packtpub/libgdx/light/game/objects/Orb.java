@@ -34,6 +34,7 @@ public class Orb extends AbstractGameObject {
 		LEFT, RIGHT
 	}
 
+	private Animation<TextureRegion> animNormal;
 	private TextureRegion regOrb;
 	public VIEW_DIRECTION viewDirection;
 
@@ -61,7 +62,11 @@ public class Orb extends AbstractGameObject {
 		// body.getWorld().destroyBody(body);
 		// chapter 6
 		dimension.set(1, 1);
-		regOrb = Assets.instance.orb.orb;
+		
+		//regOrb = Assets.instance.orb.orb;
+		animNormal = Assets.instance.orb.animNormal;
+		setAnimation(animNormal);
+		
 		// Center image on game object
 		origin.set(dimension.x / 2, dimension.y / 2);
 		bounds.set(0, 0, dimension.x, dimension.y);
@@ -168,6 +173,8 @@ public class Orb extends AbstractGameObject {
 		if(hasEmberPowerup) {
 			batch.setColor(1.0f, 0.5f, 0.5f, 1.0f);
 		}
+		
+		reg = animation.getKeyFrame(stateTime, true);
 
 		batch.draw(reg.getTexture(), position.x, position.y, origin.x, origin.y, dimension.x, dimension.y, scale.x,
 				scale.y, rotation, reg.getRegionX(), reg.getRegionY(), reg.getRegionWidth(), reg.getRegionHeight(),
