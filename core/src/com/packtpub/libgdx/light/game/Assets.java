@@ -13,7 +13,10 @@ import com.packtpub.libgdx.light.util.Constants;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 
 /**
  * Loads up the assets and images.
@@ -31,6 +34,8 @@ public class Assets implements Disposable, AssetErrorListener {
 	public AssetEmber ember;
 	public AssetLevelDecoration levelDecoration;
 	public AssetFonts fonts;
+	//public AssetSounds sounds;
+	//public AssetMusic music;
 	
 	private static String allScore = "";
 	private static String allNames = "";
@@ -84,9 +89,18 @@ public class Assets implements Disposable, AssetErrorListener {
 	 */
 	public class AssetOrb {
 		public final AtlasRegion orb;
+		public final Animation<TextureRegion> animNormal;
 
 		public AssetOrb (TextureAtlas atlas) {
 			orb = atlas.findRegion("orb");
+			
+			Array<AtlasRegion> regions = null;
+			AtlasRegion region = null;
+			
+			//Animation: Bunny Normal
+			regions =atlas.findRegions("orb");
+			animNormal = new Animation<TextureRegion>(1.0f/10.0f,regions,
+					Animation.PlayMode.LOOP);
 		}
 	}
 
