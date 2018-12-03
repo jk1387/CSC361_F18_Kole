@@ -73,7 +73,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 
 	private float timeLeftGameOverDelay;
 
-	public int shardsCollected = 0; // temporary for now to test for sensors touched
+	public int shardsCollected = 0;
 	public int totalShards = 0;
 	boolean won = false;
 	boolean doneOnce = false;
@@ -118,8 +118,11 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 * Initialize the level with 100 seconds.
 	 */
 	private void initLevel() {
+		won = false;
 		time = 30;
 		timeVisual = time;
+		shardsCollected = 0;
+		totalShards = 0;
 		level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.orb);
 		initPhysics();
