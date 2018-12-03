@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
  * @author Jacob Kole
  */
 public class WorldRenderer implements Disposable {
-	private static final boolean DEBUT_DRAW_BOX2D_WORLD = true;
+	private static final boolean DEBUT_DRAW_BOX2D_WORLD = false;
 	private OrthographicCamera camera;
 	private OrthographicCamera cameraGUI;
 	private SpriteBatch batch;
@@ -68,7 +68,7 @@ public class WorldRenderer implements Disposable {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				//cnt += 1;
-				if(worldController.time > 0 && worldController.timeVisual > 0) {
+				if(worldController.time > 0 && worldController.timeVisual > 0 && !worldController.won) {
 					worldController.time--;
 					worldController.timeVisual--;
 					//System.out.println("Counter = "+cnt);
@@ -268,6 +268,13 @@ public class WorldRenderer implements Disposable {
 					Align.center, false);
 			fontGameOver.setColor(1, 1, 1, 1);
 		}
+	}
+	
+	/**
+	 * Renders the end game score board.
+	 */
+	private void renderGuiScoreBoard (SpriteBatch batch) {
+		
 	}
 	
 	/**

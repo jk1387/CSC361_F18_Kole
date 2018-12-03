@@ -1,5 +1,8 @@
 package com.packtpub.libgdx.light.util;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
+
 //import com.badlogic.gdx.Gdx;
 //import com.badlogic.gdx.Preferences;
 
@@ -33,6 +36,9 @@ public class Constants {
 	
 	// Preferences file
 	public static final String PREFERENCES = "settings.prefs";
+	
+	// Preference file for high score
+	public static Preferences prefs = Gdx.app.getPreferences("settings.prefs");
 	
 	// Location of the ui atlas
 	public static final String TEXTURE_ATLAS_UI =

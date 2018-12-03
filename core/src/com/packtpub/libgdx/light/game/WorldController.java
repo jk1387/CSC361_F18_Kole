@@ -35,7 +35,9 @@ import javax.swing.Timer;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
+import com.packtpub.libgdx.light.util.AudioManager;
 import com.packtpub.libgdx.light.util.CameraHelper;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -57,7 +59,7 @@ import com.packtpub.libgdx.light.util.Constants;
  * 
  * @author Jacob Kole
  */
-public class WorldController extends InputAdapter implements Disposable, ContactListener {
+public class WorldController extends InputAdapter implements Disposable, ContactListener, TextInputListener {
 	private static final String TAG = WorldController.class.getName();
 	public CameraHelper cameraHelper;
 	private Game game;
@@ -71,10 +73,13 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 
 	private float timeLeftGameOverDelay;
 
-	public int shardsCollected = 0; // temporary for now to test for sensors touched
+	public int shardsCollected = 0;
 	public int totalShards = 0;
 	boolean won = false;
 	boolean doneOnce = false;
+	boolean showScore = false;
+	int[] scores;
+	String[] names;
 
 	// BOX2D STUFF
 	public static World world; // contains all the box2d bodies and fixtures
@@ -116,13 +121,17 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 * Initialize the level with 100 seconds.
 	 */
 	private void initLevel() {
+		won = false;
+		showScore = false;
 		time = 30;
 		timeVisual = time;
+		shardsCollected = 0;
+		totalShards = 0;
 		level = new Level(Constants.LEVEL_01);
 		cameraHelper.setTarget(level.orb);
 		initPhysics();
 		totalShards = level.shards.size;
-		//System.out.println("Total Shards: " + totalShards);
+		// System.out.println("Total Shards: " + totalShards);
 	}
 
 	/**
@@ -236,13 +245,44 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			System.out.println("DESTROYED");
 		}
 		handleDebugInput(deltaTime);
-		
+
 		if (shardsCollected >= totalShards && !won) {
+			AudioManager.instance.play(Assets.instance.sounds.win);
 			won = true;
 			System.out.println("You've collected all the shards!");
 			System.out.println("Your score was " + time + "!");
+			
+			//System.out.println("Highest: " + Assets.getHighScore()[Assets.getHighScore().length - 1]);
+
+			int i = 1;
+			if (Assets.getHighScore().length > 10) {
+				i = Assets.getHighScore().length - 10;
+			}
+
+			scores = Assets.getHighScore();
+			names = Assets.getScoreNames();
+			System.out.println("Previous High Scores: ");
+			for (; i < scores.length; i++) {
+				System.out.println("\t" + names[i] + " - " + scores[i]);
+			}
+			//System.out.println();
+
+			if (time > Assets.getHighScore()[Assets.getHighScore().length - 1]) {
+				System.out.println("Won!");
+//				int[] scores = Assets.getHighScore();
+//				System.out.print("Previous High Scores: ");
+//				for (int i = 1; i < scores.length; i++) {
+//					System.out.print(scores[i] + " ");
+//				}
+//				System.out.println();
+				Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
+				//Assets.setHighScore(time, "Test Name");
+				scores = Assets.getHighScore();
+				System.out.println("New High Score: " + scores[scores.length - 1]);
+			}
+			showScore = true;
 		}
-		
+
 		if (isGameOver()/* || goalReached */) {
 			timeLeftGameOverDelay -= deltaTime;
 			if (timeLeftGameOverDelay < 0) {
@@ -263,7 +303,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		level.update(deltaTime);
 
 		if (!isGameOver() && isTimeGone()) {
-			// AudioManager.instance.play(Assets.instance.sounds.liveLost);
+			AudioManager.instance.play(Assets.instance.sounds.liveLost);
 			life--;
 			if (isGameOver())
 				timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
@@ -329,6 +369,9 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	private void playerMovement() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		level.orb.orbParticles.setPosition(level.orb.body.getPosition().x + level.orb.origin.x,level.orb.body.getPosition().y + level.orb.origin.y);
+		level.orb.orbParticles.start();
 
 		Vector2 vel = level.orb.body.getLinearVelocity();
 		Vector2 pos = level.orb.body.getPosition();
@@ -361,7 +404,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (!Gdx.input.isKeyPressed(Keys.A) && !Gdx.input.isKeyPressed(Keys.D)
 				|| !Gdx.input.isKeyPressed(Keys.W) && !Gdx.input.isKeyPressed(Keys.S)) {
 			stillTime += Gdx.graphics.getDeltaTime();
-			if(!embered) {
+			if (!embered) {
 				level.orb.body.setLinearVelocity(vel.x * 0.9f, vel.y);
 			} else {
 				level.orb.body.setLinearVelocity(vel.x * 0.9f, vel.y * 0.9f);
@@ -397,7 +440,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (Gdx.input.isKeyPressed(Keys.D) && vel.x < MAX_VELOCITY) {
 			level.orb.body.applyLinearImpulse(2f, 0, pos.x, pos.y, true);
 		}
-		
+
 		// apply down impulse, but only if max velocity is not reached yet
 		if (embered && Gdx.input.isKeyPressed(Keys.S) && vel.y > -MAX_VELOCITY) {
 			level.orb.body.applyLinearImpulse(0, -2f, pos.x, pos.y, true);
@@ -407,7 +450,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (embered && Gdx.input.isKeyPressed(Keys.W) && vel.y < MAX_VELOCITY) {
 			level.orb.body.applyLinearImpulse(0, 2f, pos.x, pos.y, true);
 		}
-		
+
 		if (embered) {
 			level.orb.body.setGravityScale(0);
 		} else {
@@ -418,6 +461,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (jump) {
 			jump = false;
 			if (grounded) {
+				AudioManager.instance.play(Assets.instance.sounds.jump);
 				level.orb.body.setLinearVelocity(vel.x, 0);
 				level.orb.body.setTransform(pos.x, pos.y + 0.01f, 0);
 				level.orb.body.applyLinearImpulse(0, 10, pos.x, pos.y, true);
@@ -601,6 +645,48 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
 			backToMenu();
 		}
+		// Set new High Score
+		else if (keycode == Keys.O) {
+			System.out.println("Highest: " + Assets.getHighScore()[Assets.getHighScore().length - 1]);
+
+			int i = 1;
+			if (Assets.getHighScore().length > 10) {
+				i = Assets.getHighScore().length - 10;
+			}
+
+			scores = Assets.getHighScore();
+			names = Assets.getScoreNames();
+			System.out.println("Previous High Scores: ");
+			for (; i < scores.length; i++) {
+				System.out.println("\t" + names[i] + " - " + scores[i]);
+			}
+			//System.out.println();
+
+			if (time > Assets.getHighScore()[Assets.getHighScore().length - 1]) {
+				System.out.println("Won!");
+//				int[] scores = Assets.getHighScore();
+//				System.out.print("Previous High Scores: ");
+//				for (int i = 1; i < scores.length; i++) {
+//					System.out.print(scores[i] + " ");
+//				}
+//				System.out.println();
+				Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
+				//Assets.setHighScore(time, "Test Name");
+				scores = Assets.getHighScore();
+				System.out.println("New High Score: " + scores[scores.length - 1]);
+			}
+		}
+		// Reset High Score
+		else if (keycode == Keys.P) {
+			System.out.println("Reset!");
+			Assets.resetHighScore();
+		}
+		// Pull up dialogue box
+		else if (keycode == Keys.I) {
+			//TextInputListener listener = new TextInputListener();
+			Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
+			//ApplicationListener.render();
+		}
 		return false;
 	}
 
@@ -617,6 +703,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	@Override
 	public void dispose() {
+		level.orb.orbParticles.allowCompletion();
 		if (world != null)
 			world.dispose();
 	}
@@ -626,18 +713,18 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	@Override
 	public void beginContact(Contact contact) {
-		//System.out.println("CONTACT");
+		// System.out.println("CONTACT");
 		if (contact.getFixtureA().getBody().getUserData() == level.orb
 				&& contact.getFixtureB().getBody().getUserData().getClass() == Shard.class
 				&& contact.getFixtureB().isSensor()) { // player and is a sensor
 			if (!doneOnce) {
 				touchedObject = (AbstractGameObject) contact.getFixtureB().getBody().getUserData();
 				System.out.println("Touched a Shard\n-------" + shardsCollected++);
-				((Shard)touchedObject).collected = true;
+				((Shard) touchedObject).collected = true;
 				toDestroy = touchedObject;
 				doneOnce = true;
 
-				// AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
+				AudioManager.instance.play(Assets.instance.sounds.pickupShard);
 				time += ((Shard) touchedObject).getScore();
 				Gdx.app.log(TAG, "Shard collected");
 			}
@@ -650,11 +737,11 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			if (!doneOnce) {
 				touchedObject = (AbstractGameObject) contact.getFixtureB().getBody().getUserData();
 				System.out.println("Touched an Ember\n-------");
-				((Ember)touchedObject).emberCollected = true;
+				((Ember) touchedObject).emberCollected = true;
 				toDestroy = touchedObject;
 				doneOnce = true;
 
-				// AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
+				AudioManager.instance.play(Assets.instance.sounds.pickupEmber);
 				time += ((Ember) touchedObject).getScore();
 				level.orb.setEmberPowerup(true);
 				Gdx.app.log(TAG, "Ember collected");
@@ -690,5 +777,23 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	@Override
 	public void postSolve(Contact contact, ContactImpulse impulse) {
 		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * Grabs the input from a text box that takes in user input.
+	 */
+	@Override
+	public void input(String text) {
+		// TODO Auto-generated method stub
+		Assets.setHighScore(time, text);
+	}
+
+	/**
+	 * Code for when canceled is clicked.
+	 */
+	@Override
+	public void canceled() {
+		// TODO Auto-generated method stub
+		
 	}
 }

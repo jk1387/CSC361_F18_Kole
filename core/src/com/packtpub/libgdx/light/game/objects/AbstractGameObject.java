@@ -34,6 +34,11 @@ public abstract class AbstractGameObject {
 	public PolygonShape poly;
 	public Fixture fixture;
 	
+	// state time of the animation
+	public float stateTime;
+	// current set animation
+	public Animation<TextureRegion> animation;
+	
 	//public boolean collected;
 	//public boolean emberCollected;
 	
@@ -51,11 +56,22 @@ public abstract class AbstractGameObject {
 	}
 	
 	/**
+	 * Change the current animation and set the state time
+	 * to 0.
+	 * @param animation the current animation
+	 */
+	public void setAnimation(Animation<TextureRegion> animation){
+		this.animation = animation;
+		stateTime = 0;
+	}
+	
+	/**
 	 * Update method for the abstract game object class. Updates the 
 	 * position of all box2d bodies.
 	 * @param deltaTime time between updates
 	 */
 	public void update (float deltaTime) {
+		stateTime += deltaTime;
 		if(body != null)
 			position.set(body.getPosition());
 	}
