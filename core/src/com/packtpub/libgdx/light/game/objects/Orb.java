@@ -28,6 +28,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 public class Orb extends AbstractGameObject {
 	public static final String TAG = Orb.class.getName();
 
+	public ParticleEffect orbParticles = new ParticleEffect();
+	
 	public enum VIEW_DIRECTION {
 		LEFT, RIGHT
 	}
@@ -89,6 +91,12 @@ public class Orb extends AbstractGameObject {
 		// Power-ups
 		hasEmberPowerup = false;
 		timeLeftEmberPowerup = 0;
+		
+		// Particle
+		orbParticles.load(Gdx.files.internal("particles/orbglow.pfx"), Gdx.files.internal("particles"));
+		
+//		orbParticles.setPosition(origin.x, origin.y);
+//		orbParticles.start();
 	};
 
 	/**
@@ -138,7 +146,7 @@ public class Orb extends AbstractGameObject {
 				//setAnimation(animCopterTransformBack);
 			}
 		}
-		//dustParticles.update(deltaTime);
+		orbParticles.update(deltaTime);
 
 		// Change animation state according to feather power-up
 		if (hasEmberPowerup) {
@@ -153,6 +161,9 @@ public class Orb extends AbstractGameObject {
 	public void render(SpriteBatch batch) {
 		TextureRegion reg = null;
 		reg = regOrb;
+		
+		// Draw Particles
+		orbParticles.draw(batch);
 		
 		if(hasEmberPowerup) {
 			batch.setColor(1.0f, 0.5f, 0.5f, 1.0f);
