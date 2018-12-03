@@ -37,6 +37,7 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
+import com.packtpub.libgdx.light.util.AudioManager;
 import com.packtpub.libgdx.light.util.CameraHelper;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -273,7 +274,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		level.update(deltaTime);
 
 		if (!isGameOver() && isTimeGone()) {
-			// AudioManager.instance.play(Assets.instance.sounds.liveLost);
+			AudioManager.instance.play(Assets.instance.sounds.liveLost);
 			life--;
 			if (isGameOver())
 				timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
@@ -431,6 +432,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (jump) {
 			jump = false;
 			if (grounded) {
+				AudioManager.instance.play(Assets.instance.sounds.jump);
 				level.orb.body.setLinearVelocity(vel.x, 0);
 				level.orb.body.setTransform(pos.x, pos.y + 0.01f, 0);
 				level.orb.body.applyLinearImpulse(0, 10, pos.x, pos.y, true);
@@ -693,7 +695,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 				toDestroy = touchedObject;
 				doneOnce = true;
 
-				// AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
+				AudioManager.instance.play(Assets.instance.sounds.pickupShard);
 				time += ((Shard) touchedObject).getScore();
 				Gdx.app.log(TAG, "Shard collected");
 			}
@@ -710,7 +712,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 				toDestroy = touchedObject;
 				doneOnce = true;
 
-				// AudioManager.instance.play(Assets.instance.sounds.pickupCoin);
+				AudioManager.instance.play(Assets.instance.sounds.pickupEmber);
 				time += ((Ember) touchedObject).getScore();
 				level.orb.setEmberPowerup(true);
 				Gdx.app.log(TAG, "Ember collected");

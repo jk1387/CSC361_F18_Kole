@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.packtpub.libgdx.light.game.Assets;
 import com.packtpub.libgdx.light.util.Constants;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.packtpub.libgdx.light.util.AudioManager;
 import com.packtpub.libgdx.light.util.CharacterSkin;
 import com.packtpub.libgdx.light.util.GamePreferences;
 //import com.packtpub.libgdx.light.util.AudioManager;
@@ -113,7 +114,7 @@ public class MenuScreen extends AbstractGameScreen {
 	 onCancelClicked();
 	 
 	 //starts music
-	 //AudioManager.instance.onSettingsUpdated();
+	 AudioManager.instance.onSettingsUpdated();
  }
  /**
   * Set visibility values after saving
@@ -126,7 +127,7 @@ public class MenuScreen extends AbstractGameScreen {
 	 showOptionsWindow(false, true);
 	 
 	 //starts music
-	 //AudioManager.instance.onSettingsUpdated();
+	 AudioManager.instance.onSettingsUpdated();
  }
  /**
   * Method to rebuild the stage/
