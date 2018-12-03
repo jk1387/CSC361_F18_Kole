@@ -77,6 +77,9 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	public int totalShards = 0;
 	boolean won = false;
 	boolean doneOnce = false;
+	boolean showScore = false;
+	int[] scores;
+	String[] names;
 
 	// BOX2D STUFF
 	public static World world; // contains all the box2d bodies and fixtures
@@ -119,6 +122,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	private void initLevel() {
 		won = false;
+		showScore = false;
 		time = 30;
 		timeVisual = time;
 		shardsCollected = 0;
@@ -243,18 +247,40 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		handleDebugInput(deltaTime);
 
 		if (shardsCollected >= totalShards && !won) {
+			AudioManager.instance.play(Assets.instance.sounds.win);
 			won = true;
-//			int[] scores = Assets.getHighScore();
-//			System.out.print("Previous High Scores: ");
-//			for(int i = 0; i < scores.length; i++) {
-//				System.out.print(scores[i] + " ");
-//			}
-//			System.out.println();
-//			Assets.setHighScore(time);
-//			scores = Assets.getHighScore();
 			System.out.println("You've collected all the shards!");
 			System.out.println("Your score was " + time + "!");
-//			System.out.println("New High Score: " + scores[scores.length - 1]);
+			
+			//System.out.println("Highest: " + Assets.getHighScore()[Assets.getHighScore().length - 1]);
+
+			int i = 1;
+			if (Assets.getHighScore().length > 10) {
+				i = Assets.getHighScore().length - 10;
+			}
+
+			scores = Assets.getHighScore();
+			names = Assets.getScoreNames();
+			System.out.println("Previous High Scores: ");
+			for (; i < scores.length; i++) {
+				System.out.println("\t" + names[i] + " - " + scores[i]);
+			}
+			//System.out.println();
+
+			if (time > Assets.getHighScore()[Assets.getHighScore().length - 1]) {
+				System.out.println("Won!");
+//				int[] scores = Assets.getHighScore();
+//				System.out.print("Previous High Scores: ");
+//				for (int i = 1; i < scores.length; i++) {
+//					System.out.print(scores[i] + " ");
+//				}
+//				System.out.println();
+				Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
+				//Assets.setHighScore(time, "Test Name");
+				scores = Assets.getHighScore();
+				System.out.println("New High Score: " + scores[scores.length - 1]);
+			}
+			showScore = true;
 		}
 
 		if (isGameOver()/* || goalReached */) {
@@ -624,12 +650,12 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			System.out.println("Highest: " + Assets.getHighScore()[Assets.getHighScore().length - 1]);
 
 			int i = 1;
-			if (Assets.getHighScore().length > 3) {
-				i = Assets.getHighScore().length - 3;
+			if (Assets.getHighScore().length > 10) {
+				i = Assets.getHighScore().length - 10;
 			}
 
-			int[] scores = Assets.getHighScore();
-			String[] names = Assets.getScoreNames();
+			scores = Assets.getHighScore();
+			names = Assets.getScoreNames();
 			System.out.println("Previous High Scores: ");
 			for (; i < scores.length; i++) {
 				System.out.println("\t" + names[i] + " - " + scores[i]);

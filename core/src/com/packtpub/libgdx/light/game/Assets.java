@@ -67,9 +67,11 @@ public class Assets implements Disposable, AssetErrorListener {
 		assetManager.load("sounds/pickup_shard.wav", Sound.class);
 		assetManager.load("sounds/pickup_ember.wav", Sound.class);
 		assetManager.load("sounds/live_lost.wav", Sound.class);
+		assetManager.load("sounds/win.wav", Sound.class);
 
 		// load music
-		assetManager.load("music/keith303_-_brand_new_highscore.mp3", Music.class);
+		//assetManager.load("music/keith303_-_brand_new_highscore.mp3", Music.class);
+		assetManager.load("music/kf2_krampus.mp3", Music.class);
 
 		// start loading assets and wait until finished
 		assetManager.finishLoading();
@@ -199,12 +201,14 @@ public class Assets implements Disposable, AssetErrorListener {
 		public final Sound pickupShard;
 		public final Sound pickupEmber;
 		public final Sound liveLost;
+		public final Sound win;
 
 		public AssetSounds(AssetManager am) {
 			jump = am.get("sounds/jump.wav", Sound.class);
 			pickupShard = am.get("sounds/pickup_shard.wav", Sound.class);
 			pickupEmber = am.get("sounds/pickup_ember.wav", Sound.class);
 			liveLost = am.get("sounds/live_lost.wav", Sound.class);
+			win = am.get("sounds/win.wav", Sound.class);
 		}
 	}
 
@@ -217,7 +221,8 @@ public class Assets implements Disposable, AssetErrorListener {
 		public final Music song01;
 
 		public AssetMusic(AssetManager am) {
-			song01 = am.get("music/keith303_-_brand_new_highscore.mp3", Music.class);
+			//song01 = am.get("music/keith303_-_brand_new_highscore.mp3", Music.class);
+			song01 = am.get("music/kf2_krampus.mp3", Music.class);
 		}
 	}
 

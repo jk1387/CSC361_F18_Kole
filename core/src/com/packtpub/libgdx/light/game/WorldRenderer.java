@@ -271,6 +271,13 @@ public class WorldRenderer implements Disposable {
 	}
 	
 	/**
+	 * Renders the end game score board.
+	 */
+	private void renderGuiScoreBoard (SpriteBatch batch) {
+		
+	}
+	
+	/**
 	 * Checks whether there is still time left for the feather
 	 * power-up effect to end. The icon is drawn in the top-left
 	 * corner under the gold coin icon. The small number next to it
