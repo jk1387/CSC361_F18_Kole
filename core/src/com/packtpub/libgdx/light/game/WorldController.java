@@ -339,6 +339,9 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	private void playerMovement() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		level.orb.orbParticles.setPosition(level.orb.body.getPosition().x + level.orb.origin.x,level.orb.body.getPosition().y + level.orb.origin.y);
+		level.orb.orbParticles.start();
 
 		Vector2 vel = level.orb.body.getLinearVelocity();
 		Vector2 pos = level.orb.body.getPosition();
@@ -669,6 +672,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	@Override
 	public void dispose() {
+		level.orb.orbParticles.allowCompletion();
 		if (world != null)
 			world.dispose();
 	}
