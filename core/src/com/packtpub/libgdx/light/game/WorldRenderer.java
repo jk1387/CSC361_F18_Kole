@@ -68,7 +68,7 @@ public class WorldRenderer implements Disposable {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				//cnt += 1;
-				if(worldController.time > 0 && worldController.timeVisual > 0) {
+				if(worldController.time > 0 && worldController.timeVisual > 0 && !worldController.won) {
 					worldController.time--;
 					worldController.timeVisual--;
 					//System.out.println("Counter = "+cnt);
