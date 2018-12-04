@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 public enum CharacterSkin {
 
 	//instance variablesS
-	WHITE("White", 1.0f, 1.0f, 1.0f), GREEN("Green", 0f, 0.9f, 0.25f), GOLD("Gold", 1.0f, 0.8f, 0f);
+	WHITE("White", 1.0f, 1.0f, 1.0f), GREEN("Green", 0f, 0.9f, 0.25f), RED("Red", 1.0f, 0.1f, 0f);
 	private String name;
 	private Color color = new Color();
 
