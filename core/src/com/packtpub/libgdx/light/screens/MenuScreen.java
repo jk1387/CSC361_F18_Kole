@@ -99,7 +99,7 @@ public class MenuScreen extends AbstractGameScreen {
 		for (; i < sco.length; i++) {
 			scores[j] = sco[i];
 			names[j] = nam[i];
-			System.out.println("\t" + names[j] + " - " + scores[j]);
+			//System.out.println("\t" + names[j] + " - " + scores[j]);
 			j++;
 		}
 		
