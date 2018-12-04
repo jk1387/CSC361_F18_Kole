@@ -3,6 +3,7 @@ package com.packtpub.libgdx.light.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.packtpub.libgdx.light.util.AudioManager;
 import com.packtpub.libgdx.light.util.GamePreferences;
 import com.packtpub.libgdx.light.game.Assets;
 import com.packtpub.libgdx.light.game.WorldController;
@@ -77,6 +78,7 @@ public class GameScreen extends AbstractGameScreen {
 	@Override
 	public void show () {
 		GamePreferences.instance.load();
+		AudioManager.instance.play(Assets.instance.music.song02);
 		worldController = new WorldController(game);
 		worldRenderer = new WorldRenderer(worldController);
 		Gdx.input.setCatchBackKey(true);
@@ -88,6 +90,7 @@ public class GameScreen extends AbstractGameScreen {
 	 */
 	@Override
 	public void hide () {
+		AudioManager.instance.stopMusic();
 		worldRenderer.dispose();
 		worldController.dispose();
 		Gdx.input.setCatchBackKey(false);
