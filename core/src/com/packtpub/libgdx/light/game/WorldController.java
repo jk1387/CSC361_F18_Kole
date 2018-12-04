@@ -265,18 +265,19 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			System.out.println("Previous High Scores: ");
 			
 			// sorts the scores array
-			for(int k = 0; k < scores.length - 1; k++) {
-				int key = scores[k];
-				String string = names[k];
-				int l = k - 1;
-				
-				while(l >= 0 && scores[l] > key) {
-					scores[l + 1] = scores[l];
-					names[l + 1] = names[l];
-					l--;
+			int temp;
+			String str;
+			for (int k = 1; k < scores.length; k++) {
+				for (int l = k; l > 0; l--) {
+					if(scores[l] < scores[l-1]) {
+						temp = scores[l];
+						str = names[l];
+						scores[l] = scores[l-1];
+						names[l] = names[l-1];
+						scores[l-1] = temp;
+						names[l-1] = str;
+					}
 				}
-				scores[l + 1] = key;
-				names[l + 1] = string;
 			}
 			
 			for (; i < scores.length; i++) {
@@ -669,18 +670,19 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			System.out.println("Previous High Scores: ");
 			
 			// sorts the scores array
-			for(int k = 0; k < scores.length - 1; k++) {
-				int key = scores[k];
-				String string = names[k];
-				int l = k - 1;
-				
-				while(l >= 0 && scores[l] > key) {
-					scores[l + 1] = scores[l];
-					names[l + 1] = names[l];
-					l--;
+			int temp;
+			String str;
+			for (int k = 1; k < scores.length; k++) {
+				for (int l = k; l > 0; l--) {
+					if(scores[l] < scores[l-1]) {
+						temp = scores[l];
+						str = names[l];
+						scores[l] = scores[l-1];
+						names[l] = names[l-1];
+						scores[l-1] = temp;
+						names[l-1] = str;
+					}
 				}
-				scores[l + 1] = key;
-				names[l + 1] = string;
 			}
 			
 			for (; i < scores.length; i++) {
