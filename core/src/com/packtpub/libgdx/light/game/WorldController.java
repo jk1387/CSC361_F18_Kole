@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -41,6 +43,7 @@ import com.packtpub.libgdx.light.util.AudioManager;
 import com.packtpub.libgdx.light.util.CameraHelper;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.packtpub.libgdx.light.screens.MenuScreen;
 import com.packtpub.libgdx.light.game.Assets;
@@ -77,7 +80,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	public int totalShards = 0;
 	boolean won = false;
 	boolean doneOnce = false;
-	boolean showScore = false;
+	boolean scorePlaced = false;
 	int[] scores;
 	String[] names;
 
@@ -122,7 +125,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	private void initLevel() {
 		won = false;
-		showScore = false;
+		scorePlaced = false;
 		time = 30;
 		timeVisual = time;
 		shardsCollected = 0;
@@ -251,8 +254,6 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			won = true;
 			System.out.println("You've collected all the shards!");
 			System.out.println("Your score was " + time + "!");
-			
-			//System.out.println("Highest: " + Assets.getHighScore()[Assets.getHighScore().length - 1]);
 
 			int i = 1;
 			if (Assets.getHighScore().length > 10) {
@@ -262,28 +263,34 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			scores = Assets.getHighScore();
 			names = Assets.getScoreNames();
 			System.out.println("Previous High Scores: ");
+			
+			// sorts the scores array
+			for(int k = 0; k < scores.length - 1; k++) {
+				int key = scores[k];
+				String string = names[k];
+				int l = k - 1;
+				
+				while(l >= 0 && scores[l] > key) {
+					scores[l + 1] = scores[l];
+					names[l + 1] = names[l];
+					l--;
+				}
+				scores[l + 1] = key;
+				names[l + 1] = string;
+			}
+			
 			for (; i < scores.length; i++) {
 				System.out.println("\t" + names[i] + " - " + scores[i]);
 			}
-			//System.out.println();
 
-			if (time > Assets.getHighScore()[Assets.getHighScore().length - 1]) {
-				System.out.println("Won!");
-//				int[] scores = Assets.getHighScore();
-//				System.out.print("Previous High Scores: ");
-//				for (int i = 1; i < scores.length; i++) {
-//					System.out.print(scores[i] + " ");
-//				}
-//				System.out.println();
-				Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
-				//Assets.setHighScore(time, "Test Name");
-				scores = Assets.getHighScore();
-				System.out.println("New High Score: " + scores[scores.length - 1]);
-			}
-			showScore = true;
+			System.out.println("Won!");
+			Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
+			// Assets.setHighScore(time, "Test Name");
+			scores = Assets.getHighScore();
+			System.out.println("New High Score: " + scores[scores.length - 1]);
 		}
 
-		if (isGameOver()/* || goalReached */) {
+		if (isGameOver()) {
 			timeLeftGameOverDelay -= deltaTime;
 			if (timeLeftGameOverDelay < 0) {
 				backToMenu();
@@ -305,10 +312,12 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		if (!isGameOver() && isTimeGone()) {
 			AudioManager.instance.play(Assets.instance.sounds.liveLost);
 			life--;
-			if (isGameOver())
+			if (isGameOver()) {
 				timeLeftGameOverDelay = Constants.TIME_DELAY_GAME_OVER;
-			else
+			}
+			else {
 				initLevel();
+			}
 		}
 
 		level.pillars.updateScrollPosition(cameraHelper.getPosition());
@@ -369,8 +378,9 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	 */
 	private void playerMovement() {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		level.orb.orbParticles.setPosition(level.orb.body.getPosition().x + level.orb.origin.x,level.orb.body.getPosition().y + level.orb.origin.y);
+
+		level.orb.orbParticles.setPosition(level.orb.body.getPosition().x + level.orb.origin.x,
+				level.orb.body.getPosition().y + level.orb.origin.y);
 		level.orb.orbParticles.start();
 
 		Vector2 vel = level.orb.body.getLinearVelocity();
@@ -657,12 +667,28 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 			scores = Assets.getHighScore();
 			names = Assets.getScoreNames();
 			System.out.println("Previous High Scores: ");
+			
+			// sorts the scores array
+			for(int k = 0; k < scores.length - 1; k++) {
+				int key = scores[k];
+				String string = names[k];
+				int l = k - 1;
+				
+				while(l >= 0 && scores[l] > key) {
+					scores[l + 1] = scores[l];
+					names[l + 1] = names[l];
+					l--;
+				}
+				scores[l + 1] = key;
+				names[l + 1] = string;
+			}
+			
 			for (; i < scores.length; i++) {
 				System.out.println("\t" + names[i] + " - " + scores[i]);
 			}
-			//System.out.println();
+			// System.out.println();
 
-			if (time > Assets.getHighScore()[Assets.getHighScore().length - 1]) {
+			//if (time > Assets.getHighScore()[Assets.getHighScore().length - 1]) {
 				System.out.println("Won!");
 //				int[] scores = Assets.getHighScore();
 //				System.out.print("Previous High Scores: ");
@@ -671,10 +697,10 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 //				}
 //				System.out.println();
 				Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
-				//Assets.setHighScore(time, "Test Name");
+				// Assets.setHighScore(time, "Test Name");
 				scores = Assets.getHighScore();
 				System.out.println("New High Score: " + scores[scores.length - 1]);
-			}
+			//}
 		}
 		// Reset High Score
 		else if (keycode == Keys.P) {
@@ -683,9 +709,9 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 		}
 		// Pull up dialogue box
 		else if (keycode == Keys.I) {
-			//TextInputListener listener = new TextInputListener();
+			// TextInputListener listener = new TextInputListener();
 			Gdx.input.getTextInput(this, "Please enter a name to verify your score!", "", "Your Name!");
-			//ApplicationListener.render();
+			// ApplicationListener.render();
 		}
 		return false;
 	}
@@ -786,6 +812,7 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	public void input(String text) {
 		// TODO Auto-generated method stub
 		Assets.setHighScore(time, text);
+		scorePlaced = true;
 	}
 
 	/**
@@ -794,6 +821,6 @@ public class WorldController extends InputAdapter implements Disposable, Contact
 	@Override
 	public void canceled() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

@@ -259,7 +259,7 @@ public class WorldRenderer implements Disposable {
 		if (worldController.isGameOver()) {
 			// grabs the game over message font and sets its color
 			BitmapFont fontGameOver = Assets.instance.fonts.defaultBig;
-			fontGameOver.setColor(1, 0.75f, 0.25f, 1);
+			fontGameOver.setColor(1, 0.25f, 0.25f, 1);
 			
 			// draws the message
 			// HAlignment.CENTER: means to draw the font horizontally centered
@@ -268,13 +268,6 @@ public class WorldRenderer implements Disposable {
 					Align.center, false);
 			fontGameOver.setColor(1, 1, 1, 1);
 		}
-	}
-	
-	/**
-	 * Renders the end game score board.
-	 */
-	private void renderGuiScoreBoard (SpriteBatch batch) {
-		
 	}
 	
 	/**
