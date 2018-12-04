@@ -83,6 +83,7 @@ public class MenuScreen extends AbstractGameScreen {
 	}
 	
 	private void prepScores() {
+//		System.out.println("Prepping Score");
 		int i = 1;
 		if (Assets.getHighScore().length > 10) {
 			i = Assets.getHighScore().length - 10;
@@ -98,24 +99,30 @@ public class MenuScreen extends AbstractGameScreen {
 		for (; i < sco.length; i++) {
 			scores[j] = sco[i];
 			names[j] = nam[i];
-			//System.out.println("\t" + names[i] + " - " + scores[i]);
+			System.out.println("\t" + names[j] + " - " + scores[j]);
 			j++;
 		}
 		
 		// sorts the scores array
-		for(int k = 0; k < scores.length - 1; k++) {
-			int key = scores[k];
-			String string = names[k];
-			int l = k - 1;
-			
-			while(l >= 0 && scores[l] > key) {
-				scores[l + 1] = scores[l];
-				names[l + 1] = names[l];
-				l--;
+		int temp;
+		String str;
+		for (int k = 1; k < scores.length; k++) {
+			for (int l = k; l > 0; l--) {
+				if(scores[l] < scores[l-1]) {
+					temp = scores[l];
+					str = names[l];
+					scores[l] = scores[l-1];
+					names[l] = names[l-1];
+					scores[l-1] = temp;
+					names[l-1] = str;
+				}
 			}
-			scores[l + 1] = key;
-			names[l + 1] = string;
 		}
+		
+//		System.out.println("Finished Sorting");
+//		for(int m = 0; m < scores.length; m++) {
+//			System.out.println("\t" + names[m] + " - " + scores[m]);
+//		}
 	}
 
 	/**
