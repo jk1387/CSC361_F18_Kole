@@ -72,6 +72,7 @@ public class Assets implements Disposable, AssetErrorListener {
 		// load music
 		//assetManager.load("music/keith303_-_brand_new_highscore.mp3", Music.class);
 		assetManager.load("music/kf2_krampus.mp3", Music.class);
+		assetManager.load("music/yiruma_skullee.mp3", Music.class);
 
 		// start loading assets and wait until finished
 		assetManager.finishLoading();
@@ -172,22 +173,26 @@ public class Assets implements Disposable, AssetErrorListener {
 		public final BitmapFont defaultSmall;
 		public final BitmapFont defaultNormal;
 		public final BitmapFont defaultBig;
+		public final BitmapFont defaultScores;
 
 		public AssetFonts() {
 			// create three fonts using Libgdx's 15px bitmap font
 			defaultSmall = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
 			defaultNormal = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
 			defaultBig = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), true);
+			defaultScores = new BitmapFont(Gdx.files.internal("images/arial-15.fnt"), false);
 
 			// set font sizes
 			defaultSmall.getData().setScale(0.75f);
 			defaultNormal.getData().setScale(1.0f);
 			defaultBig.getData().setScale(2.0f);
+			defaultScores.getData().setScale(2.0f);
 
 			// enable linear texture filtering for smooth fonts
 			defaultSmall.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			defaultNormal.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 			defaultBig.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			defaultScores.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		}
 	}
 
@@ -219,10 +224,12 @@ public class Assets implements Disposable, AssetErrorListener {
 	 */
 	public class AssetMusic {
 		public final Music song01;
+		public final Music song02;
 
 		public AssetMusic(AssetManager am) {
 			//song01 = am.get("music/keith303_-_brand_new_highscore.mp3", Music.class);
-			song01 = am.get("music/kf2_krampus.mp3", Music.class);
+			song01 = am.get("music/yiruma_skullee.mp3", Music.class);
+			song02 = am.get("music/kf2_krampus.mp3", Music.class);
 		}
 	}
 
