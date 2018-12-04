@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.packtpub.libgdx.light.game.Assets;
 import com.packtpub.libgdx.light.game.WorldController;
+import com.packtpub.libgdx.light.util.CharacterSkin;
 import com.packtpub.libgdx.light.util.Constants;
+import com.packtpub.libgdx.light.util.GamePreferences;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -170,6 +172,11 @@ public class Orb extends AbstractGameObject {
 		// Draw Particles
 		orbParticles.draw(batch);
 		
+		// Apply Skin Color
+		batch.setColor(CharacterSkin.values()
+				[GamePreferences.instance.charSkin].getColor());
+		
+		// Set red when embered
 		if(hasEmberPowerup) {
 			batch.setColor(1.0f, 0.5f, 0.5f, 1.0f);
 		}

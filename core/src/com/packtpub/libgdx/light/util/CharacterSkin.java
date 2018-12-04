@@ -1,16 +1,15 @@
-/*
- * Author: Christian Crouthamel
- * Description: Enum class for character skins
- */
-
 package com.packtpub.libgdx.light.util;
 
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * Helps set the character skin for the orb.
+ * @author Jacob Kole
+ */
 public enum CharacterSkin {
 
 	//instance variablesS
-	WHITE("White", 1.0f, 1.0f, 1.0f), GRAY("Gray", 0.7f, 0.7f, 0.7f), BROWN("Brown", 0.7f, 0.5f, 0.3f);
+	WHITE("White", 1.0f, 1.0f, 1.0f), GREEN("Green", 0f, 0.9f, 0.25f), RED("Red", 1.0f, 0.1f, 0f);
 	private String name;
 	private Color color = new Color();
 
